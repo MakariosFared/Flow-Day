@@ -1,0 +1,3456 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlowDay UI/UX Design System & Prototype</title>
+  <!-- Google Fonts: IBM Plex Sans Arabic & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       FLOWDAY DESIGN SYSTEM — CLEAR CURRENT
+       ============================================================ */
+    :root {
+      /* Brand: clear, grounded, and quietly energetic */
+      --primary-sage: #176B68;
+      --primary-sage-hover: #115B58;
+      --primary-sage-subtle: #E5F3F1;
+      --primary-sage-tint: #F1FAF8;
+      --primary-deep: #0D3D3B;
+      --primary-glow: rgba(23, 107, 104, 0.18);
+      
+      --bg-main: #F6F8F7;
+      --surface: #FFFFFF;
+      --surface-elevated: #FFFFFF;
+      --surface-secondary: #EDF3F1;
+      
+      --text-primary: #172B2A;
+      --text-secondary: #60716F;
+      --text-muted: #8A9896;
+      --text-on-primary: #FFFFFF;
+      
+      --success: #197C62;
+      --success-light: #E5F6EF;
+      --success-border: #BDE8D9;
+      
+      --warning: #A96717;
+      --warning-light: #FFF5E5;
+      --warning-border: #F2D59B;
+      --warning-strong: #75420A;
+      
+      --danger: #B84D57;
+      --danger-light: #FDEDEE;
+      
+      --border-subtle: #E0E9E6;
+      --border-medium: #CBDAD6;
+      --border-focus: #176B68;
+      
+      /* Categories Colors */
+      --cat-work: #2B6680;
+      --cat-work-bg: #E8F3F8;
+      --cat-learning: #7451A3;
+      --cat-learning-bg: #F2ECFA;
+      --cat-personal: #A8583B;
+      --cat-personal-bg: #FBEDE8;
+      --cat-health: #4C7B58;
+      --cat-health-bg: #EAF4EA;
+
+      /* Metrics & Radius */
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --radius-pill: 9999px;
+      
+      --shadow-sm: 0 1px 3px rgba(23, 43, 42, 0.05);
+      --shadow-card: 0 4px 12px rgba(23, 43, 42, 0.05), 0 1px 2px rgba(23, 43, 42, 0.02);
+      --shadow-floating: 0 12px 28px rgba(23, 43, 42, 0.10);
+      
+      --font-family: 'IBM Plex Sans Arabic', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-theme="dark"] {
+      --bg-main: #102322;
+      --surface: #18302F;
+      --surface-elevated: #203A38;
+      --surface-secondary: #142A29;
+      --text-primary: #EFF8F5;
+      --text-secondary: #B0C2BD;
+      --text-muted: #78918A;
+      --border-subtle: #284542;
+      --border-medium: #3B5B57;
+      --primary-sage: #68C4B9;
+      --primary-sage-hover: #91DDD3;
+      --primary-sage-subtle: #1B4541;
+      --primary-sage-tint: #163532;
+      --primary-deep: #0B2523;
+      --primary-glow: rgba(104, 196, 185, 0.18);
+      --cat-work: #A9DCEC;
+      --cat-learning: #DEC9FF;
+      --cat-personal: #FFC6B2;
+      --cat-health: #BFE8C2;
+      --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Reset & Base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: #0B1C1B;
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Studio Header & Navigation */
+    .studio-header {
+      background: #102625;
+      border-bottom: 1px solid #284542;
+      color: #FFFFFF;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+
+    .studio-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo-icon {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, #1B827C, #43AFA2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
+      box-shadow: 0 3px 10px rgba(23, 107, 104, 0.34);
+    }
+
+    .brand-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      background: rgba(104, 196, 185, 0.13);
+      border: 1px solid rgba(104, 196, 185, 0.28);
+      color: #BDE5DE;
+      border-radius: var(--radius-pill);
+      font-weight: 500;
+    }
+
+    .studio-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      background: #183432;
+      border-radius: var(--radius-md);
+      padding: 3px;
+      border: 1px solid #31514D;
+    }
+
+    .control-btn {
+      background: transparent;
+      border: none;
+      color: #A9C1BB;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition-smooth);
+      font-family: inherit;
+    }
+
+    .control-btn:hover {
+      color: #FFFFFF;
+      background: rgba(255,255,255,0.06);
+    }
+
+    .control-btn.active {
+      background: #176B68;
+      color: #FFFFFF;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+    }
+
+    .screen-selector-select {
+      background: #183432;
+      color: #FFFFFF;
+      border: 1px solid #31514D;
+      padding: 7px 14px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Main Showcase Canvas */
+    .showcase-canvas {
+      flex: 1;
+      padding: 30px 20px 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #0B1C1B;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(40, 155, 145, 0.18) 0%, transparent 60%),
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+    }
+
+    /* Screen View Container */
+    .view-mode-single {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+    }
+
+    .screen-meta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(45, 150, 141, 0.16);
+      border: 1px solid rgba(87, 199, 188, 0.30);
+      color: #CDEDE7;
+      padding: 6px 16px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* Device Mockup Frame */
+    .device-mockup {
+      width: 390px;
+      height: 830px;
+      background: var(--bg-main);
+      border-radius: 46px;
+      border: 10px solid #23272F;
+      outline: 2px solid #363D49;
+      box-shadow: 
+        0 25px 60px -15px rgba(0, 0, 0, 0.7),
+        0 0 0 1px rgba(255, 255, 255, 0.08),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      margin: 0 auto;
+      transition: var(--transition-smooth);
+    }
+
+    /* Phone Status Bar */
+    .status-bar {
+      height: 44px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      z-index: 50;
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    .dynamic-island {
+      width: 110px;
+      height: 26px;
+      background: #000000;
+      border-radius: 20px;
+      position: absolute;
+      top: 9px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+    }
+
+    .status-bar-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Screen Scroll Area */
+    .screen-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: var(--bg-main);
+      color: var(--text-primary);
+      scroll-behavior: smooth;
+    }
+
+    .screen-content::-webkit-scrollbar {
+      width: 4px;
+    }
+    .screen-content::-webkit-scrollbar-thumb {
+      background: rgba(23, 107, 104, 0.22);
+      border-radius: 4px;
+    }
+
+    /* Fixed Bottom Navigation */
+    .bottom-nav {
+      height: 68px;
+      background: var(--surface);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 12px 10px;
+      position: relative;
+      z-index: 40;
+      flex-shrink: 0;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.02);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 500;
+      transition: var(--transition-smooth);
+      padding: 6px 12px;
+      border-radius: var(--radius-md);
+      position: relative;
+    }
+
+    .nav-item:hover {
+      color: var(--primary-sage);
+    }
+
+    .nav-item.active {
+      color: var(--primary-sage);
+      font-weight: 600;
+    }
+
+    .nav-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      width: 14px;
+      height: 3px;
+      background: var(--primary-sage);
+      border-radius: 3px;
+    }
+
+    .nav-icon {
+      width: 22px;
+      height: 22px;
+      stroke-width: 2;
+    }
+
+    /* Home Indicator bar */
+    .home-indicator {
+      width: 130px;
+      height: 4px;
+      background: var(--text-secondary);
+      opacity: 0.35;
+      border-radius: 4px;
+      position: absolute;
+      bottom: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 60;
+      pointer-events: none;
+    }
+
+    /* Multi-Screen Grid View (Showcase / Behance Mode) */
+    .view-mode-grid {
+      display: none;
+      grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
+      gap: 40px 30px;
+      width: 100%;
+      max-width: 1650px;
+      margin: 0 auto;
+    }
+
+    .grid-screen-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .grid-screen-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #E2E8F0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 370px;
+      padding: 0 4px;
+    }
+
+    .grid-screen-num {
+      background: #262D38;
+      color: #9BB0C7;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .grid-device-frame {
+      width: 370px;
+      height: 760px;
+      background: var(--bg-main);
+      border-radius: 38px;
+      border: 8px solid #23272F;
+      outline: 1px solid #363D49;
+      box-shadow: 0 15px 35px -10px rgba(0,0,0,0.6);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* ============================================================
+       COMMON UI COMPONENTS & UTILITIES
+       ============================================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      border: none;
+      transition: var(--transition-smooth);
+      text-decoration: none;
+      outline: none;
+    }
+
+    .btn-primary {
+      background: var(--primary-sage);
+      color: #FFFFFF;
+      box-shadow: 0 3px 10px rgba(23, 107, 104, 0.22);
+    }
+    .btn-primary:hover {
+      background: var(--primary-sage-hover);
+    }
+
+    .btn-secondary {
+      background: var(--primary-sage-subtle);
+      color: var(--primary-sage);
+    }
+    .btn-secondary:hover {
+      background: #D8ECE8;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border-medium);
+      color: var(--text-primary);
+    }
+    .btn-outline:hover {
+      background: var(--surface-secondary);
+      border-color: var(--border-focus);
+    }
+
+    .btn-text {
+      background: transparent;
+      color: var(--text-secondary);
+      padding: 8px 12px;
+    }
+    .btn-text:hover {
+      color: var(--text-primary);
+      background: rgba(0,0,0,0.03);
+    }
+
+    .btn-disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .btn-loading {
+      position: relative;
+      color: transparent !important;
+      pointer-events: none;
+    }
+    .btn-loading::after {
+      content: "";
+      width: 18px;
+      height: 18px;
+      position: absolute;
+      top: calc(50% - 9px);
+      left: calc(50% - 9px);
+      border: 2px solid #FFFFFF;
+      border-right-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    .btn-sm {
+      padding: 8px 14px;
+      font-size: 12px;
+      border-radius: 8px;
+    }
+
+    /* Badges & Pills */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+
+    .badge-work { background: var(--cat-work-bg); color: var(--cat-work); }
+    .badge-learning { background: var(--cat-learning-bg); color: var(--cat-learning); }
+    .badge-personal { background: var(--cat-personal-bg); color: var(--cat-personal); }
+    .badge-health { background: var(--cat-health-bg); color: var(--cat-health); }
+
+    .badge-priority-high { background: var(--danger-light); color: var(--danger); }
+    .badge-priority-med { background: var(--warning-light); color: var(--warning); }
+    .badge-priority-low { background: var(--surface-secondary); color: var(--text-secondary); }
+
+    .badge-status-todo { background: var(--surface-secondary); color: var(--text-secondary); }
+    .badge-status-progress { background: #E7F3F5; color: #276B78; }
+    .badge-status-completed { background: var(--success-light); color: var(--success); }
+
+    /* Sync Indicator Pills */
+    .sync-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 500;
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+    }
+    .sync-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+    .sync-dot.synced { background: var(--success); }
+    .sync-dot.syncing { background: var(--primary-sage); animation: pulse 1.2s infinite; }
+    .sync-dot.offline { background: var(--text-muted); }
+    .sync-dot.error { background: var(--danger); }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-card);
+      padding: 16px;
+      transition: var(--transition-smooth);
+    }
+
+    .card-clickable {
+      cursor: pointer;
+    }
+    .card-clickable:hover {
+      border-color: var(--border-medium);
+      transform: translateY(-1px);
+    }
+
+    /* App Bar / Screen Header */
+    .app-header {
+      padding: 16px 20px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-main);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .app-header-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .header-icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+    .header-icon-btn:hover {
+      background: var(--surface-secondary);
+    }
+
+    /* ============================================================
+       SCREEN 1: ONBOARDING
+       ============================================================ */
+    .screen-onboarding {
+      padding: 30px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 100%;
+      text-align: center;
+    }
+
+    .onboarding-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .onboarding-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .onboarding-illustration-container {
+      margin: 30px auto 20px;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(23, 107, 104, 0.10) 0%, transparent 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .calm-art-card {
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 10px 25px rgba(32, 40, 51, 0.06);
+      width: 210px;
+      text-align: right;
+    }
+
+    html[dir="ltr"] .calm-art-card {
+      text-align: left;
+    }
+
+    .art-bar {
+      height: 8px;
+      border-radius: 4px;
+      background: var(--border-subtle);
+      margin-bottom: 8px;
+    }
+
+    .art-bar.active {
+      background: var(--primary-sage);
+      width: 75%;
+    }
+
+    .onboarding-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .onboarding-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      max-width: 290px;
+      margin: 0 auto;
+    }
+
+    .carousel-indicators {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 26px 0 20px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border-medium);
+      transition: var(--transition-smooth);
+      cursor: pointer;
+    }
+
+    .dot.active {
+      width: 24px;
+      border-radius: 10px;
+      background: var(--primary-sage);
+    }
+
+    .onboarding-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* ============================================================
+       SCREEN 2: AUTHENTICATION
+       ============================================================ */
+    .screen-auth {
+      padding: 30px 24px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .auth-tab-bar {
+      display: flex;
+      background: var(--surface-secondary);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      margin-bottom: 24px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .auth-tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .auth-tab.active {
+      background: var(--surface);
+      color: var(--text-primary);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 7px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .form-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      font-size: 14px;
+      color: var(--text-primary);
+      font-family: inherit;
+      transition: var(--transition-smooth);
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary-sage);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .input-icon-btn {
+      position: absolute;
+      left: 12px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    html[dir="ltr"] .input-icon-btn {
+      left: auto;
+      right: 12px;
+    }
+
+    .auth-row-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      margin-bottom: 24px;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .auth-link {
+      color: var(--primary-sage);
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* ============================================================
+       SCREEN 3: TODAY DASHBOARD (THE CORE)
+       ============================================================ */
+    .dashboard-header {
+      padding: 18px 20px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .user-greeting-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #D9DFE5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--primary-sage);
+      border: 2px solid var(--surface);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      font-size: 15px;
+    }
+
+    .greeting-text {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .sub-greeting {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .dashboard-body {
+      padding: 6px 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Daily Progress Card */
+    .progress-summary-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .progress-ring-container {
+      position: relative;
+      width: 74px;
+      height: 74px;
+      flex-shrink: 0;
+    }
+
+    .progress-ring-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .progress-stats {
+      flex: 1;
+    }
+
+    .progress-stat-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .progress-stat-sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .focus-time-logged-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--primary-sage-subtle);
+      color: var(--primary-sage);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+    }
+
+    /* Focus Card (Sage Highlight) */
+    .focus-card-hero {
+      background: linear-gradient(135deg, #176B68 0%, #0D4745 100%);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      color: #FFFFFF;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 24px rgba(13, 71, 69, 0.26);
+    }
+
+    .focus-card-hero::after {
+      content: "";
+      position: absolute;
+      right: -20px;
+      bottom: -30px;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .focus-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .focus-pill-active {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .focus-task-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+
+    .focus-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      opacity: 0.85;
+      margin-bottom: 16px;
+    }
+
+    .btn-focus-start {
+      background: #FFFFFF;
+      color: var(--primary-deep);
+      border: none;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+    .btn-focus-start:hover {
+      background: #E4F3F0;
+      transform: scale(1.02);
+    }
+
+    /* Schedule Timeline */
+    .schedule-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .section-action-link {
+      font-size: 12px;
+      color: var(--primary-sage);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .timeline-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .timeline-item {
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      position: relative;
+      transition: var(--transition-smooth);
+      cursor: pointer;
+    }
+
+    .timeline-item:hover {
+      border-color: var(--border-medium);
+    }
+
+    .timeline-item.active-now {
+      border-right: 4px solid var(--primary-sage);
+      background: var(--surface);
+    }
+    html[dir="ltr"] .timeline-item.active-now {
+      border-right: 1px solid var(--border-subtle);
+      border-left: 4px solid var(--primary-sage);
+    }
+
+    .timeline-time-col {
+      min-width: 52px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      line-height: 1.2;
+    }
+
+    .timeline-info {
+      flex: 1;
+    }
+
+    .timeline-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .timeline-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .delay-flag-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--warning-light);
+      border: 1px solid var(--warning-border);
+      color: var(--warning);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    /* Quick Capture Banner */
+    .quick-capture-bar {
+      background: var(--surface);
+      border: 1px dashed var(--border-medium);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+    .quick-capture-bar:hover {
+      border-color: var(--primary-sage);
+      background: var(--primary-sage-tint);
+      color: var(--text-primary);
+    }
+
+    /* ============================================================
+       SCREEN 4: BRAIN DUMP
+       ============================================================ */
+    .screen-braindump {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+      padding: 16px 20px 24px;
+    }
+
+    .braindump-instruction {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .braindump-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .braindump-textarea {
+      flex: 1;
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      font-family: inherit;
+      outline: none;
+      resize: none;
+      min-height: 380px;
+      transition: var(--transition-smooth);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .braindump-textarea:focus {
+      border-color: var(--primary-sage);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .braindump-bottom-bar {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .organize-summary-card {
+      background: linear-gradient(145deg, var(--primary-sage-tint), var(--surface));
+      border: 1px solid color-mix(in srgb, var(--primary-sage) 22%, var(--border-subtle));
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      margin: 8px 0 12px;
+    }
+
+    .organize-task-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .organize-task-row:last-child { border-bottom: 0; padding-bottom: 0; }
+    .organize-task-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 11px;
+      background: var(--surface);
+      display: grid;
+      place-items: center;
+      box-shadow: var(--shadow-sm);
+      flex: 0 0 auto;
+    }
+
+    .task-meta-strip {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 12px 14px;
+      background: var(--surface-secondary);
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .subtask-list { display: flex; flex-direction: column; gap: 2px; }
+    .subtask-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 0;
+      color: var(--text-primary);
+      font-size: 13px;
+    }
+    .subtask-check {
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid var(--border-medium);
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      color: var(--success);
+      flex: 0 0 auto;
+    }
+
+    /* ============================================================
+       SCREEN 5: CREATE / EDIT TASK
+       ============================================================ */
+    .screen-create-task {
+      padding: 16px 20px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .chips-selector {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .select-chip {
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--border-medium);
+      background: var(--surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .select-chip:hover {
+      border-color: var(--primary-sage);
+    }
+
+    .select-chip.active {
+      background: var(--primary-sage);
+      color: #FFFFFF;
+      border-color: var(--primary-sage);
+      box-shadow: 0 3px 10px rgba(23, 107, 104, 0.22);
+    }
+
+    .conflict-alert-box {
+      background: var(--warning-light);
+      border: 1px solid var(--warning-border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--warning-strong);
+    }
+
+    /* ============================================================
+       SCREEN 6: TASK DETAILS
+       ============================================================ */
+    .screen-task-details {
+      padding: 16px 20px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .task-details-header-card {
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .task-title-lg {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 10px 0;
+      line-height: 1.4;
+    }
+
+    .task-time-metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 8px 0;
+    }
+
+    .metric-sub-card {
+      background: var(--surface-secondary);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      text-align: center;
+    }
+
+    .metric-value-huge {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .metric-label-sm {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    /* ============================================================
+       SCREEN 7: TASKS MANAGEMENT LIST
+       ============================================================ */
+    .screen-tasks {
+      padding: 12px 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .search-input-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      padding: 10px 38px 10px 14px;
+      font-size: 13px;
+      color: var(--text-primary);
+      font-family: inherit;
+      outline: none;
+    }
+    html[dir="ltr"] .search-input {
+      padding: 10px 14px 10px 38px;
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 12px;
+      color: var(--text-muted);
+    }
+    html[dir="ltr"] .search-icon {
+      right: auto;
+      left: 12px;
+    }
+
+    .tasks-tabs-row {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+    .tasks-tabs-row::-webkit-scrollbar { display: none; }
+
+    .task-tab-pill {
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: var(--transition-smooth);
+    }
+
+    .task-tab-pill.active {
+      background: var(--primary-sage);
+      color: #FFFFFF;
+      border-color: var(--primary-sage);
+    }
+
+    .task-card-item {
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: var(--transition-smooth);
+      cursor: pointer;
+    }
+
+    .task-card-item:hover {
+      border-color: var(--border-medium);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .task-check-circle {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--border-medium);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: var(--transition-smooth);
+    }
+
+    .task-check-circle.completed {
+      background: var(--success);
+      border-color: var(--success);
+      color: white;
+    }
+
+    .task-item-content {
+      flex: 1;
+    }
+
+    .task-item-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 3px;
+    }
+
+    .task-item-title.completed-text {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .task-item-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    /* Floating Action Button */
+    .fab-btn {
+      position: absolute;
+      bottom: 80px;
+      left: 20px;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--primary-sage);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 18px rgba(23, 107, 104, 0.34);
+      cursor: pointer;
+      border: none;
+      transition: var(--transition-smooth);
+      z-index: 30;
+    }
+    html[dir="ltr"] .fab-btn {
+      left: auto;
+      right: 20px;
+    }
+
+    .fab-btn:hover {
+      transform: scale(1.08);
+      background: var(--primary-sage-hover);
+    }
+
+    /* ============================================================
+       SCREEN 8: DAY PLANNER
+       ============================================================ */
+    .screen-day-planner {
+      padding: 12px 20px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .day-selector-strip {
+      display: flex;
+      justify-content: space-between;
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 8px;
+    }
+
+    .day-pill-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 6px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: var(--transition-smooth);
+    }
+
+    .day-pill-item.active {
+      background: var(--primary-sage);
+      color: white;
+    }
+
+    .capacity-banner {
+      background: var(--surface-secondary);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .planner-timeline-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+    }
+
+    .timeline-hour-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      min-height: 52px;
+      position: relative;
+    }
+
+    .hour-label {
+      width: 48px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding-top: 4px;
+    }
+
+    .planner-slot-area {
+      flex: 1;
+      border-top: 1px dashed var(--border-medium);
+      padding-top: 6px;
+      position: relative;
+    }
+
+    .schedule-block-box {
+      background: var(--surface);
+      border: 1px solid var(--border-medium);
+      border-right: 4px solid var(--primary-sage);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 12px;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+    }
+    html[dir="ltr"] .schedule-block-box {
+      border-right: 1px solid var(--border-medium);
+      border-left: 4px solid var(--primary-sage);
+    }
+
+    .schedule-block-box.conflict {
+      background: var(--warning-light);
+      border-color: var(--warning-border);
+      border-right-color: var(--warning);
+    }
+    html[dir="ltr"] .schedule-block-box.conflict {
+      border-left-color: var(--warning);
+    }
+
+    /* ============================================================
+       SCREEN 9: FOCUS SESSION
+       ============================================================ */
+    .screen-focus-session {
+      padding: 20px 24px 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 100%;
+      text-align: center;
+      background: var(--bg-main);
+    }
+
+    .focus-timer-ring-wrap {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      margin: 30px auto 20px;
+    }
+
+    .focus-timer-digits {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 42px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -1px;
+    }
+
+    .focus-timer-sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .focus-controls-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .btn-timer-primary {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: var(--primary-sage);
+      color: white;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(23, 107, 104, 0.30);
+      transition: var(--transition-smooth);
+    }
+    .btn-timer-primary:hover {
+      transform: scale(1.05);
+      background: var(--primary-sage-hover);
+    }
+
+    /* ============================================================
+       SCREEN 10: INSIGHTS
+       ============================================================ */
+    .screen-insights {
+      padding: 12px 20px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .screen-daily-review {
+      padding: 16px 20px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .review-hero {
+      background: linear-gradient(145deg, var(--primary-deep), var(--primary-sage));
+      color: #FFFFFF;
+      border-radius: var(--radius-xl);
+      padding: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .review-hero::after {
+      content: "";
+      width: 130px;
+      height: 130px;
+      position: absolute;
+      left: -38px;
+      bottom: -64px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.09);
+    }
+
+    .insights-period-switch {
+      display: flex;
+      background: var(--surface-secondary);
+      padding: 3px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .period-btn {
+      flex: 1;
+      padding: 8px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .period-btn.active {
+      background: var(--surface);
+      color: var(--text-primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .insights-metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .insight-card {
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px;
+    }
+
+    .chart-container-box {
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+
+    .bar-chart-visual {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      height: 120px;
+      padding-top: 20px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .chart-bar-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      width: 32px;
+    }
+
+    .chart-bar-fill {
+      width: 14px;
+      background: var(--primary-sage);
+      border-radius: 4px 4px 0 0;
+      transition: height 0.4s ease;
+    }
+
+    .chart-bar-col.today-bar .chart-bar-fill {
+      background: #3D8066;
+    }
+
+    .chart-day-label {
+      font-size: 10px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* What Went Well cards */
+    .gentle-note-box {
+      background: #F4F7F5;
+      border: 1px solid #D8E5DF;
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 12px;
+      color: #2D5E4C;
+    }
+
+    /* ============================================================
+       SCREEN 11: SETTINGS
+       ============================================================ */
+    .screen-settings {
+      padding: 12px 20px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .settings-group {
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .settings-group-header {
+      padding: 12px 16px 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 13px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .settings-row:hover {
+      background: var(--surface-secondary);
+    }
+
+    .settings-row-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .settings-row-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+
+    /* ============================================================
+       SCREEN 12: DESIGN SYSTEM & SHARED COMPONENTS
+       ============================================================ */
+    .screen-design-system {
+      padding: 16px 20px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .ds-section-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+    }
+
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .color-swatch {
+      border-radius: var(--radius-md);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 10px;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .color-swatch-box {
+      height: 28px;
+      border-radius: 6px;
+    }
+
+    /* Empty State Component */
+    .empty-state-box {
+      text-align: center;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .empty-state-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--primary-sage-subtle);
+      color: var(--primary-sage);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+    }
+
+    /* ------------------------------------------------------------
+       POLISH PASS — accessibility, responsive preview & dark mode
+       ------------------------------------------------------------ */
+    :where(button, select, input, textarea, a, [role="button"]):focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--primary-sage) 72%, white);
+      outline-offset: 3px;
+    }
+
+    .nav-item {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      font-family: inherit;
+    }
+
+    .nav-item:focus-visible {
+      outline-offset: 1px;
+    }
+
+    .screen-content > * {
+      animation: screen-enter 220ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes screen-enter {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    [data-theme="dark"] {
+      --success-light: #163E34;
+      --success-border: #2B7060;
+      --warning-light: #412D12;
+      --warning-border: #74531E;
+      --warning-strong: #FFD18B;
+      --danger-light: #482429;
+      --cat-work-bg: #183D4A;
+      --cat-learning-bg: #3A2B50;
+      --cat-personal-bg: #4B2B25;
+      --cat-health-bg: #294431;
+    }
+
+    [data-theme="dark"] .badge-priority-high { background: #482429; color: #FFB4BA; }
+    [data-theme="dark"] .badge-priority-med { background: #412D12; color: #FFD18B; }
+    [data-theme="dark"] .badge-priority-low,
+    [data-theme="dark"] .badge-status-todo { background: #25403D; color: #C2D8D2; }
+    [data-theme="dark"] .badge-status-progress { background: #173E46; color: #A8E2E7; }
+    [data-theme="dark"] .gentle-note-box { background: #183D34; border-color: #2C6A5A; }
+    [data-theme="dark"] .btn-focus-start { background: #DDF5F0; color: #0D3D3B; }
+    [data-theme="dark"] .btn-focus-start:hover { background: #FFFFFF; }
+    [data-theme="dark"] .btn-primary,
+    [data-theme="dark"] .select-chip.active,
+    [data-theme="dark"] .task-tab-pill.active { color: #0B2523; }
+
+    @media (max-width: 620px) {
+      .studio-header {
+        padding: 10px 14px;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .studio-brand { padding-top: 3px; }
+      .brand-tag { display: none; }
+      .studio-controls { justify-content: flex-end; gap: 7px; }
+      .screen-selector-select { max-width: 166px; }
+      .control-btn { padding: 6px 9px; }
+      .control-btn span { display: none; }
+      .showcase-canvas { padding: 18px 12px 36px; }
+      .device-mockup {
+        width: min(390px, calc(100vw - 28px));
+        height: min(830px, calc(100svh - 134px));
+        min-height: 610px;
+        border-width: 8px;
+        border-radius: 38px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Studio Control Bar -->
+  <header class="studio-header">
+    <div class="studio-brand">
+      <div class="brand-logo-icon">FD</div>
+      <div>
+        <div class="brand-title">
+          FlowDay
+          <span class="brand-tag">Calm Productivity UI</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="studio-controls">
+      <!-- Screen Dropdown -->
+      <select class="screen-selector-select" id="screenSelect" onchange="changeScreen(this.value)">
+        <option value="today">3. Today — Home Dashboard (الرئيسية)</option>
+        <option value="tasks">7. Tasks Management (جميع المهام)</option>
+        <option value="dayplanner">8. Day Planner (مخطط اليوم)</option>
+        <option value="focus">9. Focus Session (جلسة التركيز)</option>
+        <option value="braindump">4. Brain Dump (تفريغ ذهني)</option>
+        <option value="create_task">5. Create / Edit Task (إنشاء مهمة)</option>
+        <option value="task_details">6. Task Details (تفاصيل المهمة)</option>
+        <option value="insights">10. Insights (مؤشرات وتحليلات هادئة)</option>
+        <option value="daily_review">13. Daily Review (مراجعة اليوم)</option>
+        <option value="settings">11. Settings (الإعدادات)</option>
+        <option value="onboarding">1. Onboarding (الترحيب والقيمة)</option>
+        <option value="auth">2. Local Setup (إعداد البداية المحلي)</option>
+        <option value="design_system">12. Design System Components (مكتبة العناصر)</option>
+      </select>
+
+      <!-- View Mode Buttons -->
+      <div class="control-group">
+        <button class="control-btn active" id="btnModeSingle" onclick="setViewMode('single')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="3"/></svg>
+          <span data-i18n="deviceView">هاتف محاكي</span>
+        </button>
+        <button class="control-btn" id="btnModeGrid" onclick="setViewMode('grid')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span data-i18n="allScreens">معرض الشاشات (Grid)</span>
+        </button>
+      </div>
+
+      <!-- Language Toggle -->
+      <div class="control-group">
+        <button class="control-btn active" id="btnLangAr" onclick="setLanguage('ar')">عربي</button>
+        <button class="control-btn" id="btnLangEn" onclick="setLanguage('en')">English</button>
+      </div>
+
+      <!-- Theme Toggle -->
+      <div class="control-group">
+        <button class="control-btn" id="btnThemeLight" onclick="setTheme('light')">☀️</button>
+        <button class="control-btn" id="btnThemeDark" onclick="setTheme('dark')">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Canvas Container -->
+  <main class="showcase-canvas">
+    
+    <!-- MODE 1: SINGLE DEVICE VIEW (Interactive App Mockup) -->
+    <div class="view-mode-single" id="singleDeviceContainer">
+      
+      <div class="screen-meta-badge" id="screenBadge" aria-live="polite">
+        <span id="screenBadgeName">3. Today — Home Dashboard</span>
+        <span>•</span>
+        <span id="screenBadgeStatus">RTL Mobile-first</span>
+      </div>
+
+      <div class="device-mockup">
+        <!-- Dynamic Island & Status Bar -->
+        <div class="status-bar">
+          <span id="clockDisplay">09:41</span>
+          <div class="dynamic-island"></div>
+          <div class="status-bar-icons">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C7.5 3 3.75 4.8 1 7.7L12 21 23 7.7C20.25 4.8 16.5 3 12 3z"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3"/></svg>
+          </div>
+        </div>
+
+        <!-- Dynamic Screen Content Container -->
+        <div class="screen-content" id="activeScreenContent">
+          <!-- Will be filled dynamically by JavaScript -->
+        </div>
+
+        <!-- Bottom Navigation (Active only on primary screens: Today, Tasks, Insights, Settings) -->
+        <nav class="bottom-nav" id="bottomNav">
+          <button class="nav-item active" type="button" onclick="changeScreen('today')" id="navToday" aria-label="Today" aria-current="page">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span data-i18n="navToday">اليوم</span>
+          </button>
+          <button class="nav-item" type="button" onclick="changeScreen('tasks')" id="navTasks" aria-label="Tasks">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            <span data-i18n="navTasks">المهام</span>
+          </button>
+          <button class="nav-item" type="button" onclick="changeScreen('insights')" id="navInsights" aria-label="Insights">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            <span data-i18n="navInsights">المؤشرات</span>
+          </button>
+          <button class="nav-item" type="button" onclick="changeScreen('settings')" id="navSettings" aria-label="Settings">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span data-i18n="navSettings">الإعدادات</span>
+          </button>
+        </nav>
+
+        <!-- Home Bar Indicator -->
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+
+    <!-- MODE 2: MULTI-SCREEN SHOWCASE GRID (All 12 Screens Side-by-Side) -->
+    <div class="view-mode-grid" id="gridContainer">
+      <!-- Generated via JS for pristine review & capture -->
+    </div>
+
+  </main>
+
+  <!-- HTML Templates & Client-Side Logic -->
+  <script>
+    // State & i18n Dictionary
+    const i18n = {
+      ar: {
+        deviceView: "هاتف محاكي",
+        allScreens: "معرض الشاشات (Grid)",
+        navToday: "اليوم",
+        navTasks: "المهام",
+        navInsights: "المؤشرات",
+        navSettings: "الإعدادات",
+        goodMorning: "صباح الخير، عمر",
+        greetingSub: "لنبسط يومنا ونجعله واقعيًا ومثمرًا",
+        todayDate: "الأربعاء، 28 أكتوبر",
+        synced: "محفوظ على جهازك",
+        dailyProgressTitle: "إنجاز مهام اليوم",
+        tasksRatio: "3 من 6 مهام مكتملة",
+        focusLogged: "1س 45د تركيز فعلي",
+        upNext: "المهمة القادمة",
+        startFocus: "بدء جلسة التركيز",
+        todaySchedule: "جدول اليوم",
+        editSchedule: "تعديل الجدول",
+        quickCapture: "تدوين سريع — فرّغ أفكارك الآن...",
+        allTasks: "جميع المهام",
+        tabAll: "الكل",
+        tabInbox: "الصندوق",
+        tabUpcoming: "القادمة",
+        tabCompleted: "المكتملة",
+        searchPlaceholder: "ابحث في المهام والملاحظات...",
+        brainDumpTitle: "تفريغ ذهني",
+        brainDumpPrompt: "ما الذي يدور في ذهنك؟",
+        brainDumpDesc: "اكتب بحرية كل ما يشغل بالك، دون الحاجة لترتيبه أو تحديد موعد الآن.",
+        saveToInbox: "حفظ في صندوق الأفكار",
+        turnIntoTask: "تحويل إلى مهمة مجدولة",
+        createTaskTitle: "إنشاء مهمة جديدة",
+        taskTitleLabel: "عنوان المهمة *",
+        taskDescLabel: "وصف أو ملاحظات (اختياري)",
+        categoryLabel: "التصنيف",
+        priorityLabel: "الأولوية",
+        durationLabel: "المدة المتوقعة",
+        saveTaskBtn: "حفظ المهمة",
+        dayPlannerTitle: "مخطط اليوم الواقعي",
+        capacityText: "5س 15د مجدولة من 8س متاحة",
+        freeBuffer: "2س 45د وقت فراغ ومرونة",
+        focusSessionTitle: "جلسة تركيز هادئة",
+        pause: "إيقاف مؤقت",
+        resume: "استئناف",
+        finishSession: "إنهاء الجلسة وحفظ الوقت",
+        insightsTitle: "مؤشرات وتحليلات هادئة",
+        insightsSub: "افهم عاداتك ووزّع جهدك بدون ضغط أرقام مصطنع",
+        focusTimeTitle: "وقت التركيز الفعلي",
+        accuracyTitle: "دقة التخطيط الواقعي",
+        whatWentWell: "ما الذي سار بشكل رائع؟",
+        settingsTitle: "الإعدادات",
+        accountSection: "الحساب",
+        prefSection: "التفضيلات",
+        langLabel: "لغة التطبيق",
+        themeLabel: "المظهر",
+        syncSection: "البيانات والمزامنة",
+        onboardTitle1: "اجمع أفكارك ومسؤولياتك",
+        onboardDesc1: "مكان هادئ يحررك من التشتت ويسمح لك بتسجيل كل فكرة أو التزام في ثوانٍ.",
+        onboardTitle2: "خطط ليوم واقعي، مش مثالي",
+        onboardDesc2: "وزّع مهامك على وقتك الحقيقي مع فترات راحة حقيقية ومرونة لأي طارئ.",
+        onboardTitle3: "تأقلم مع المتغيرات بدون إحباط",
+        onboardDesc3: "عندما يتأخر جدولك، أعد ترتيب يومك بلمسة واحدة واعرف أين ذهب وقتك فعلاً.",
+        getStarted: "ابدأ الآن",
+        skip: "تخطي"
+      },
+      en: {
+        deviceView: "Phone Device",
+        allScreens: "All Screens (Grid)",
+        navToday: "Today",
+        navTasks: "Tasks",
+        navInsights: "Insights",
+        navSettings: "Settings",
+        goodMorning: "Good morning, Omar",
+        greetingSub: "Let's make today manageable and calm",
+        todayDate: "Wednesday, Oct 28",
+        synced: "Saved on this device",
+        dailyProgressTitle: "Daily Progress",
+        tasksRatio: "3 of 6 tasks done",
+        focusLogged: "1h 45m focused",
+        upNext: "Up Next",
+        startFocus: "Start Focus Session",
+        todaySchedule: "Today's Schedule",
+        editSchedule: "Edit Schedule",
+        quickCapture: "Brain Dump — What's on your mind?...",
+        allTasks: "Tasks",
+        tabAll: "All",
+        tabInbox: "Inbox",
+        tabUpcoming: "Upcoming",
+        tabCompleted: "Completed",
+        searchPlaceholder: "Search tasks and thoughts...",
+        brainDumpTitle: "Brain Dump",
+        brainDumpPrompt: "What's on your mind?",
+        brainDumpDesc: "Capture thoughts freely without worrying about dates, structure, or priority.",
+        saveToInbox: "Save to Inbox",
+        turnIntoTask: "Turn into Scheduled Task",
+        createTaskTitle: "Create New Task",
+        taskTitleLabel: "Task Title *",
+        taskDescLabel: "Description (optional)",
+        categoryLabel: "Category",
+        priorityLabel: "Priority",
+        durationLabel: "Estimated Duration",
+        saveTaskBtn: "Save Task",
+        dayPlannerTitle: "Realistic Day Planner",
+        capacityText: "5h 15m planned of 8h available",
+        freeBuffer: "2h 45m free buffer & rest",
+        focusSessionTitle: "Calm Focus Session",
+        pause: "Pause",
+        resume: "Resume",
+        finishSession: "Finish Session & Log Time",
+        insightsTitle: "Calm Insights",
+        insightsSub: "Understand your pace without toxic streak pressure",
+        focusTimeTitle: "Actual Focus Time",
+        accuracyTitle: "Planning Accuracy",
+        whatWentWell: "What went well?",
+        settingsTitle: "Settings",
+        accountSection: "Account",
+        prefSection: "Preferences",
+        langLabel: "Language",
+        themeLabel: "Theme",
+        syncSection: "Data & Sync",
+        onboardTitle1: "Clear Your Mind",
+        onboardDesc1: "Gather responsibilities and sudden thoughts in one distraction-free place.",
+        onboardTitle2: "Plan a Realistic Day",
+        onboardDesc2: "Map tasks to your real available time, not an idealized fantasy day.",
+        onboardTitle3: "Adapt Without Losing Progress",
+        onboardDesc3: "Adjust when priorities shift and see where your actual focus went.",
+        getStarted: "Get Started",
+        skip: "Skip"
+      }
+    };
+
+    let currentScreen = "today";
+    let currentLang = "ar";
+    let currentTheme = "light";
+    let currentViewMode = "single";
+    let brainDumpOrganized = false;
+
+    function organizeBrainDump() {
+      brainDumpOrganized = true;
+      renderScreen('braindump');
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+      
+      document.getElementById('btnLangAr').classList.toggle('active', lang === 'ar');
+      document.getElementById('btnLangEn').classList.toggle('active', lang === 'en');
+      document.getElementById('btnLangAr').setAttribute('aria-pressed', String(lang === 'ar'));
+      document.getElementById('btnLangEn').setAttribute('aria-pressed', String(lang === 'en'));
+      
+      renderScreen(currentScreen);
+      if (currentViewMode === 'grid') renderGrid();
+    }
+
+    function setTheme(theme) {
+      currentTheme = theme;
+      document.body.setAttribute('data-theme', theme);
+      document.getElementById('btnThemeLight').classList.toggle('active', theme === 'light');
+      document.getElementById('btnThemeDark').classList.toggle('active', theme === 'dark');
+      document.getElementById('btnThemeLight').setAttribute('aria-pressed', String(theme === 'light'));
+      document.getElementById('btnThemeDark').setAttribute('aria-pressed', String(theme === 'dark'));
+    }
+
+    function setViewMode(mode) {
+      currentViewMode = mode;
+      document.getElementById('btnModeSingle').classList.toggle('active', mode === 'single');
+      document.getElementById('btnModeGrid').classList.toggle('active', mode === 'grid');
+      
+      const singleEl = document.getElementById('singleDeviceContainer');
+      const gridEl = document.getElementById('gridContainer');
+      
+      if (mode === 'single') {
+        singleEl.style.display = 'flex';
+        gridEl.style.display = 'none';
+        renderScreen(currentScreen);
+      } else {
+        singleEl.style.display = 'none';
+        gridEl.style.display = 'grid';
+        renderGrid();
+      }
+    }
+
+    function changeScreen(screenId) {
+      currentScreen = screenId;
+      document.getElementById('screenSelect').value = screenId;
+      
+      // Update badge
+      const badgeNames = {
+        today: "3. Today — Home Dashboard",
+        tasks: "7. Tasks Management",
+        dayplanner: "8. Day Planner",
+        focus: "9. Focus Session",
+        braindump: "4. Brain Dump",
+        create_task: "5. Create Task",
+        task_details: "6. Task Details",
+        insights: "10. Insights",
+        daily_review: "13. Daily Review",
+        settings: "11. Settings",
+        onboarding: "1. Onboarding",
+        auth: "2. Local Setup",
+        design_system: "12. Design System Components"
+      };
+      document.getElementById('screenBadgeName').textContent = badgeNames[screenId] || screenId;
+
+      // Bottom bar active highlight
+      const navToday = document.getElementById('navToday');
+      const navTasks = document.getElementById('navTasks');
+      const navInsights = document.getElementById('navInsights');
+      const navSettings = document.getElementById('navSettings');
+      const bottomNav = document.getElementById('bottomNav');
+      
+      [navToday, navTasks, navInsights, navSettings].forEach(el => el.classList.remove('active'));
+      [navToday, navTasks, navInsights, navSettings].forEach(el => el.removeAttribute('aria-current'));
+      
+      if (screenId === 'today') { navToday.classList.add('active'); navToday.setAttribute('aria-current', 'page'); }
+      else if (screenId === 'tasks') { navTasks.classList.add('active'); navTasks.setAttribute('aria-current', 'page'); }
+      else if (screenId === 'insights') { navInsights.classList.add('active'); navInsights.setAttribute('aria-current', 'page'); }
+      else if (screenId === 'settings') { navSettings.classList.add('active'); navSettings.setAttribute('aria-current', 'page'); }
+
+      // Hide bottom nav for sub-screens if not primary
+      const isPrimary = ['today', 'tasks', 'insights', 'settings'].includes(screenId);
+      bottomNav.style.display = isPrimary ? 'flex' : 'none';
+
+      renderScreen(screenId);
+    }
+
+    // HTML Generator Functions for Every Screen
+    function getScreenHTML(screenId, lang) {
+      const t = i18n[lang];
+      
+      switch(screenId) {
+        
+        // ----------------------------------------------------
+        // SCREEN 1: ONBOARDING
+        // ----------------------------------------------------
+        case 'onboarding':
+          return `
+            <div class="screen-onboarding">
+              <div class="onboarding-top">
+                <div class="onboarding-logo">
+                  <div class="brand-logo-icon" style="width:28px;height:28px;font-size:14px;">FD</div>
+                  <span>FlowDay</span>
+                </div>
+                <button class="btn btn-text btn-sm" onclick="changeScreen('auth')">${t.skip}</button>
+              </div>
+
+              <div>
+                <div class="onboarding-illustration-container">
+                  <div class="calm-art-card">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                      <span class="badge badge-work">Work</span>
+                      <span style="font-size:11px;color:var(--text-secondary);font-weight:600;">09:00 - 10:30</span>
+                    </div>
+                    <div style="font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:8px;">Deep Architecture Work</div>
+                    <div class="art-bar active"></div>
+                    <div class="art-bar" style="width:40%;"></div>
+                  </div>
+                </div>
+
+                <h2 class="onboarding-title">${t.onboardTitle2}</h2>
+                <p class="onboarding-desc">${t.onboardDesc2}</p>
+
+                <div class="carousel-indicators">
+                  <div class="dot"></div>
+                  <div class="dot active"></div>
+                  <div class="dot"></div>
+                </div>
+              </div>
+
+              <div class="onboarding-actions">
+                <button class="btn btn-primary btn-block" onclick="changeScreen('auth')">${t.getStarted}</button>
+              </div>
+            </div>
+          `;
+
+        // ----------------------------------------------------
+        // SCREEN 2: LOCAL FIRST-USE SETUP
+        // ----------------------------------------------------
+        case 'auth':
+          return `
+            <div class="screen-auth">
+              <div class="auth-header">
+                <div class="brand-logo-icon" style="margin: 0 auto 12px; width:44px; height:44px; font-size:20px;">FD</div>
+                <h2 style="font-size:20px; font-weight:700; color:var(--text-primary);">${lang === 'ar' ? 'لنخطط على وتيرتك' : 'Plan at your own pace'}</h2>
+                <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">${lang === 'ar' ? 'ابدأ فورًا — لا حساب ولا إنترنت مطلوب.' : 'Start right away — no account or internet needed.'}</p>
+              </div>
+
+              <div class="auth-tab-bar">
+                <div class="auth-tab active" style="width:100%;">${lang === 'ar' ? 'إعداد البداية المحلي' : 'Local setup'}</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">${lang === 'ar' ? 'بماذا نُناديك؟' : 'What should we call you?'}</label>
+                <div class="input-wrapper">
+                  <input type="text" class="form-input" value="${lang === 'ar' ? 'عمر' : 'Omar'}" placeholder="${lang === 'ar' ? 'اسمك' : 'Your name'}">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">${lang === 'ar' ? 'وقتك المتاح افتراضيًا' : 'Your default available time'}</label>
+                <div class="input-wrapper">
+                  <input type="text" class="form-input" value="09:00 — 17:00" aria-label="${lang === 'ar' ? 'الوقت المتاح' : 'Available time'}">
+                </div>
+              </div>
+
+              <div class="auth-row-options">
+                <label class="checkbox-label">
+                  <input type="checkbox" checked>
+                  <span>${lang === 'ar' ? 'أضف 15 دقيقة راحة بعد كل 90 دقيقة تركيز' : 'Add a 15-minute break after 90 focused minutes'}</span>
+                </label>
+                <span class="auth-link">${lang === 'ar' ? 'يمكن تعديلها لاحقًا' : 'Editable later'}</span>
+              </div>
+
+              <button class="btn btn-primary btn-block" style="margin-bottom:14px;" onclick="changeScreen('today')">
+                ${lang === 'ar' ? 'ابدأ يومي' : 'Start my day'}
+              </button>
+
+              <p style="text-align:center; font-size:12px; color:var(--text-secondary); margin-top:auto;">
+                ${lang === 'ar' ? 'بياناتك تبقى على جهازك وتعمل دون إنترنت.' : 'Your data stays on-device and works offline.'}
+              </p>
+            </div>
+          `;
+
+        // ----------------------------------------------------
+        // SCREEN 3: TODAY DASHBOARD (CORE HOME)
+        // ----------------------------------------------------
+        case 'today':
+          return `
+            <div>
+              <!-- Header -->
+              <div class="dashboard-header">
+                <div class="user-greeting-wrap">
+                  <div class="user-avatar" onclick="changeScreen('settings')">ع</div>
+                  <div>
+                    <div class="greeting-text">${t.goodMorning}</div>
+                    <div class="sub-greeting">${t.greetingSub}</div>
+                  </div>
+                </div>
+                <div class="sync-chip">
+                  <span class="sync-dot synced"></span>
+                  <span>${t.synced}</span>
+                </div>
+              </div>
+
+              <div class="dashboard-body">
+                <!-- Daily Progress Card -->
+                <div class="progress-summary-card">
+                  <div class="progress-ring-container">
+                    <svg width="74" height="74" viewBox="0 0 74 74">
+                      <circle cx="37" cy="37" r="30" stroke="var(--border-subtle)" stroke-width="6" fill="transparent"/>
+                      <circle cx="37" cy="37" r="30" stroke="var(--primary-sage)" stroke-width="6" fill="transparent"
+                              stroke-dasharray="188.4" stroke-dashoffset="94.2" stroke-linecap="round"
+                              transform="rotate(-90 37 37)"/>
+                    </svg>
+                    <div class="progress-ring-text">50%</div>
+                  </div>
+                  <div class="progress-stats">
+                    <div class="progress-stat-title">${t.dailyProgressTitle}</div>
+                    <div class="progress-stat-sub">${t.tasksRatio}</div>
+                    <div class="focus-time-logged-chip">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      <span>${t.focusLogged}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Focus Card (Sage Hero) -->
+                <div class="focus-card-hero">
+                  <div class="focus-card-header">
+                    <span class="focus-pill-active">
+                      <span style="width:6px;height:6px;border-radius:50%;background:#A8DADC;"></span>
+                      ${t.upNext}
+                    </span>
+                    <span class="badge badge-work" style="background:rgba(255,255,255,0.2);color:#FFFFFF;">Work</span>
+                  </div>
+                  <div class="focus-task-title">${lang === 'ar' ? 'إعادة هيكلة كود المصادقة والـ Routing' : 'Refactor Auth Architecture & Routing'}</div>
+                  <div class="focus-meta-row">
+                    <span>⏱️ 45 min planned</span>
+                    <span>•</span>
+                    <span>High Priority</span>
+                  </div>
+                  <button class="btn-focus-start" onclick="changeScreen('focus')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <span>${t.startFocus}</span>
+                  </button>
+                </div>
+
+                <!-- Schedule Section -->
+                <div class="schedule-header-row">
+                  <div class="section-title">${t.todaySchedule}</div>
+                  <span class="section-action-link" onclick="changeScreen('dayplanner')">${t.editSchedule}</span>
+                </div>
+
+                <div class="timeline-list">
+                  <!-- Block 1 (Completed) -->
+                  <div class="timeline-item" onclick="changeScreen('task_details')">
+                    <div class="timeline-time-col">09:00<br><span style="font-weight:400;color:var(--text-muted);">09:45</span></div>
+                    <div class="timeline-info">
+                      <div class="timeline-title" style="text-decoration:line-through;color:var(--text-muted);">${lang === 'ar' ? 'مراجعة وتحديث Design Tokens' : 'Review Design System Tokens'}</div>
+                      <div class="timeline-badges">
+                        <span class="badge badge-status-completed">✓ ${lang === 'ar' ? 'مكتمل' : 'Completed'}</span>
+                        <span class="badge badge-work">Work</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Block 2 (Current Focus Task) -->
+                  <div class="timeline-item active-now" onclick="changeScreen('task_details')">
+                    <div class="timeline-time-col" style="color:var(--primary-sage);">10:00<br><span style="font-weight:400;">10:45</span></div>
+                    <div class="timeline-info">
+                      <div class="timeline-title">${lang === 'ar' ? 'إعادة هيكلة كود المصادقة والـ Routing' : 'Refactor Auth Architecture'}</div>
+                      <div class="timeline-badges">
+                        <span class="badge badge-priority-high">${lang === 'ar' ? 'أولوية عالية' : 'High'}</span>
+                        <span class="badge badge-work">Work</span>
+                        <span style="font-size:11px;color:var(--primary-sage);font-weight:600;">⚡ ${lang === 'ar' ? 'الآن' : 'Active'}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Block 3 (Delayed / Conflict Item) -->
+                  <div class="timeline-item" onclick="changeScreen('task_details')">
+                    <div class="timeline-time-col">11:15<br><span style="font-weight:400;color:var(--text-muted);">12:00</span></div>
+                    <div class="timeline-info">
+                      <div class="timeline-title">${lang === 'ar' ? 'اختبار الـ Endpoints وتكامل قاعدة البيانات' : 'API Endpoints & Drift Integration'}</div>
+                      <div class="timeline-badges">
+                        <span class="badge badge-learning">Learning</span>
+                        <span class="delay-flag-badge">⚠️ ${lang === 'ar' ? 'تأخير 15د - قابل للتعديل' : '15m delay detected'}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Quick Capture / Brain Dump trigger -->
+                <div class="quick-capture-bar" onclick="changeScreen('braindump')">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  <span>${t.quickCapture}</span>
+                </div>
+
+                <button class="btn btn-outline btn-block" type="button" style="margin-top:10px;padding:10px 14px;font-size:12px;" onclick="changeScreen('daily_review')">
+                  ${lang === 'ar' ? 'مراجعة اليوم' : 'Review today'}
+                </button>
+              </div>
+            </div>
+          `;
+
+        // ----------------------------------------------------
+        // SCREEN 4: BRAIN DUMP
+        // ----------------------------------------------------
+        case 'braindump':
+          return `
+            <div class="screen-braindump">
+              <div class="app-header" style="padding:0 0 16px;">
+                <button class="header-icon-btn" onclick="changeScreen('today')">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                </button>
+                <div class="app-header-title">${t.brainDumpTitle}</div>
+                <button class="btn btn-text btn-sm" onclick="alert('Inbox Cleared')">${lang === 'ar' ? 'مسح' : 'Clear'}</button>
+              </div>
+
+              <div class="braindump-instruction">${t.brainDumpPrompt}</div>
+              <div class="braindump-subtitle">${t.brainDumpDesc}</div>
+
+              ${brainDumpOrganized ? `
+                <div class="organize-summary-card">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                    <strong style="font-size:14px;color:var(--text-primary);">${lang === 'ar' ? 'وجدنا 3 مهام قابلة للتخطيط' : 'We found 3 plan-ready tasks'}</strong>
+                    <span class="badge badge-status-progress">${lang === 'ar' ? 'منظّمة محليًا' : 'Organized locally'}</span>
+                  </div>
+                  <p style="font-size:12px;color:var(--text-secondary);line-height:1.55;">${lang === 'ar' ? 'استخدمنا القواعد البسيطة للتصنيف. أي مدة غير واضحة تحصل على 30 دقيقة افتراضيًا.' : 'Simple rules grouped these ideas. Unclear durations default to 30 minutes.'}</p>
+                  <div class="organize-task-row">
+                    <div class="organize-task-icon">💻</div><div style="flex:1;"><strong style="font-size:13px;">${lang === 'ar' ? 'اختبارات خوارزمية تتبع الوقت' : 'Time-tracking algorithm tests'}</strong><div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">45m · <span style="color:var(--cat-work);">Work</span> · ${lang === 'ar' ? 'عالية' : 'High'}</div></div>
+                  </div>
+                  <div class="organize-task-row">
+                    <div class="organize-task-icon">📚</div><div style="flex:1;"><strong style="font-size:13px;">${lang === 'ar' ? 'مراجعة ملاحظات Riverpod' : 'Review Riverpod migration notes'}</strong><div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">30m · <span style="color:var(--cat-learning);">Learning</span> · ${lang === 'ar' ? 'متوسطة' : 'Medium'}</div></div>
+                  </div>
+                  <div class="organize-task-row">
+                    <div class="organize-task-icon">✦</div><div style="flex:1;"><strong style="font-size:13px;">${lang === 'ar' ? 'ملخص أسبوعي هادئ' : 'Weekly calm summary export'}</strong><div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">30m · <span style="color:var(--cat-personal);">Personal</span> · ${lang === 'ar' ? 'منخفضة' : 'Low'}</div></div>
+                  </div>
+                </div>` : `
+                <textarea class="braindump-textarea" placeholder="${lang === 'ar' ? 'مهمة، فكرة برمجية، شيء تريد تذكره، أو ملاحظة سريعة...' : 'A task, an idea, something to remember without pressure...'}">${lang === 'ar' ? '• كتابة اختبارات Unit tests لحساب الوقت\n• مراجعة مكتبة Riverpod 2.6 وتحديث الـ providers\n• فكرة: تصدير ملخص الأسبوع الهادئ' : '• Unit test coverage for time tracking algorithms\n• Check Riverpod 2.6 migration notes\n• Feature idea: Weekly calm summary export'}</textarea>`}
+
+              <div class="braindump-bottom-bar">
+                <button class="btn btn-primary btn-block" onclick="${brainDumpOrganized ? `alert('${lang === 'ar' ? 'تمت إضافة المهام إلى قائمة اليوم' : 'Tasks added to your planning list'}'); changeScreen('tasks')` : 'organizeBrainDump()'}">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span>${brainDumpOrganized ? (lang === 'ar' ? 'إضافة المهام للتخطيط' : 'Add tasks to plan') : (lang === 'ar' ? 'تنظيم الأفكار' : 'Organize ideas')}</span>
+                </button>
+                <button class="btn btn-secondary btn-block" onclick="${brainDumpOrganized ? 'brainDumpOrganized = false; renderScreen(\'braindump\')' : "alert('" + (lang === 'ar' ? 'يمكنك تنظيم الأفكار أولًا أو إنشاء مهمة واحدة يدويًا.' : 'Organize ideas first, or create one task manually.') + "'); changeScreen('create_task')"}">
+                  <span>${brainDumpOrganized ? (lang === 'ar' ? 'العودة للكتابة' : 'Keep writing') : t.turnIntoTask}</span>
+                </button>
+              </div>
+            </div>
+          `;
+
+        // ----------------------------------------------------
+        // SCREEN 5: CREATE TASK
+        // ----------------------------------------------------
+        case 'create_task':
+          return `
+            <div class="screen-create-task">
+              <div class="app-header" style="padding:0 0 8px;">
+                <button class="header-icon-btn" onclick="changeScreen('tasks')">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                </button>
+                <div class="app-header-title">${t.createTaskTitle}</div>
+                <div style="width:36px;"></div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">${t.taskTitleLabel}</label>
+                <input type="text" class="form-input" value="${lang === 'ar' ? 'بناء شاشة Focus Session في فلاتر' : 'Build Focus Session UI in Flutter'}" placeholder="e.g. Refactor API layer">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">${t.taskDescLabel}</label>
+                <textarea class="form-input" style="height:70px; resize:none;" placeholder="${lang === 'ar' ? 'ملاحظات تفصيلية أو روابط للمهمة...' : 'Add context or details...'}">${lang === 'ar' ? 'تضمين عداد دائري وتخزين الـ timestamps في Drift لحساب الوقت عند انقطاع التطبيق.' : 'Circular progress with stored timestamps for background tolerance.'}</textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">${t.categoryLabel}</label>
+                <div class="chips-selector">
+                  <div class="select-chip active">💻 Work</div>
+                  <div class="select-chip">📚 Learning</div>
+                  <div class="select-chip">🌱 Personal</div>
+                  <div class="select-chip">🏃 Health</div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">${t.priorityLabel}</label>
+                <div class="chips-selector">
+                  <div class="select-chip">Low</div>
+                  <div class="select-chip active">Medium</div>
+                  <div class="select-chip">High</div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">${t.durationLabel}</label>
+                <div class="chips-selector">
+                  <div class="select-chip">15m</div>
+                  <div class="select-chip active">30m</div>
+                  <div class="select-chip">45m</div>
+                  <div class="select-chip">60m</div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">${lang === 'ar' ? 'موعد التنفيذ' : 'Plan for'}</label>
+                <div class="chips-selector">
+                  <div class="select-chip active">${lang === 'ar' ? 'اليوم' : 'Today'}</div>
+                  <div class="select-chip">${lang === 'ar' ? 'غدًا' : 'Tomorrow'}</div>
+                  <div class="select-chip">${lang === 'ar' ? 'لاحقًا' : 'Later'}</div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">${lang === 'ar' ? 'الوقت المفضّل' : 'Preferred time'}</label>
+                <div class="chips-selector">
+                  <div class="select-chip active">${lang === 'ar' ? 'أي وقت' : 'Any time'}</div>
+                  <div class="select-chip">${lang === 'ar' ? 'صباحًا' : 'Morning'}</div>
+                  <div class="select-chip">${lang === 'ar' ? 'بعد الظهر' : 'Afternoon'}</div>
+                  <div class="select-chip">${lang === 'ar' ? 'مساءً' : 'Evening'}</div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">${lang === 'ar' ? 'مستوى الطاقة' : 'Energy level'} <span style="font-weight:400;color:var(--text-muted);">${lang === 'ar' ? '(اختياري)' : '(optional)'}</span></label>
+                <div class="chips-selector">
+                  <div class="select-chip">${lang === 'ar' ? 'منخفض' : 'Low'}</div>
+                  <div class="select-chip active">${lang === 'ar' ? 'متوسط' : 'Medium'}</div>
+                  <div class="select-chip">${lang === 'ar' ? 'مرتفع' : 'High'}</div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">${lang === 'ar' ? 'تاريخ الاستحقاق' : 'Due date'} <span style="font-weight:400;color:var(--text-muted);">${lang === 'ar' ? '(اختياري)' : '(optional)'}</span></label>
+                <button class="btn btn-outline btn-block" type="button" style="justify-content:space-between;font-weight:500;">
+                  <span>${lang === 'ar' ? 'لا يوجد موعد نهائي' : 'No due date'}</span><span style="color:var(--text-muted);">›</span>
+                </button>
+              </div>
+
+              <!-- Conflict Detector Warning Preview -->
+              <div class="conflict-alert-box">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <div>
+                  <div style="font-weight:700;">${lang === 'ar' ? 'تنبيه تعارض زمني خفيف' : 'Minor time overlap'}</div>
+                  <div>${lang === 'ar' ? 'الوقت المختار يتداخل مع جلسة API بـ 15 دقيقة. يمكنك ضبطه لاحقًا من مخطط اليوم.' : 'This overlaps with API review by 15 mins. You can easily adjust from Day Planner.'}</div>
+                </div>
+              </div>
+
+              <button class="btn btn-primary btn-block" onclick="changeScreen('tasks')">${t.saveTaskBtn}</button>
+            </div>
+          `;
+
+        // ----------------------------------------------------
+        // SCREEN 6: TASK DETAILS
+        // ----------------------------------------------------
+        case 'task_details':
+          return `
+            <div class="screen-task-details">
+              <div class="app-header" style="padding:0 0 8px;">
+                <button class="header-icon-btn" onclick="changeScreen('today')">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                </button>
+                <div class="app-header-title">${lang === 'ar' ? 'تفاصيل المهمة' : 'Task Details'}</div>
+                <button class="header-icon-btn" onclick="changeScreen('create_task')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                </button>
+              </div>
+
+              <div class="task-details-header-card">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                  <span class="badge badge-status-progress">${lang === 'ar' ? 'قيد التنفيذ' : 'In Progress'}</span>
+                  <span class="badge badge-priority-high">${lang === 'ar' ? 'أولوية عالية' : 'High Priority'}</span>
+                  <span class="badge badge-work">Work</span>
+                </div>
+                <div class="task-title-lg">${lang === 'ar' ? 'إعادة هيكلة كود المصادقة والـ Routing' : 'Refactor Auth Architecture & Routing'}</div>
+                <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;">
+                  ${lang === 'ar' ? 'تحديث منطق مسارات GoRouter مع إضافة Riverpod StateNotifier للتحكم في حالة تسجيل الدخول وتجديد الـ Token.' : 'Update GoRouter paths with Riverpod notifier to preserve auth redirects cleanly.'}
+                </p>
+                <div class="task-meta-strip" style="margin-top:14px;">
+                  <span>◷ ${lang === 'ar' ? 'صباحًا' : 'Morning'}</span>
+                  <span>⚡ ${lang === 'ar' ? 'طاقة مرتفعة' : 'High energy'}</span>
+                  <span>◉ ${lang === 'ar' ? 'مستحق اليوم' : 'Due today'}</span>
+                </div>
+              </div>
+
+              <!-- Time Metrics Card -->
+              <div class="card">
+                <div style="font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:10px;">${lang === 'ar' ? 'الوقت المخطط مقابل الفعلي' : 'Planned vs Actual Time'}</div>
+                <div class="task-time-metrics-grid">
+                  <div class="metric-sub-card">
+                    <div class="metric-value-huge">45m</div>
+                    <div class="metric-label-sm">${lang === 'ar' ? 'المدة التقديرية' : 'Estimated Time'}</div>
+                  </div>
+                  <div class="metric-sub-card" style="background:var(--success-light);">
+                    <div class="metric-value-huge" style="color:var(--success);">30m</div>
+                    <div class="metric-label-sm">${lang === 'ar' ? 'التركيز الفعلي' : 'Actual Logged'}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                  <div style="font-size:13px;font-weight:700;color:var(--text-primary);">${lang === 'ar' ? 'خطوات صغيرة' : 'Small steps'}</div>
+                  <span style="font-size:11px;color:var(--success);font-weight:600;">1 / 3</span>
+                </div>
+                <div class="subtask-list">
+                  <div class="subtask-row"><span class="subtask-check">✓</span><span style="text-decoration:line-through;color:var(--text-muted);">${lang === 'ar' ? 'مراجعة مسارات الدخول الحالية' : 'Review current auth routes'}</span></div>
+                  <div class="subtask-row"><span class="subtask-check"></span><span>${lang === 'ar' ? 'إضافة حالة إعادة التوجيه' : 'Add redirect-state handling'}</span></div>
+                  <div class="subtask-row"><span class="subtask-check"></span><span>${lang === 'ar' ? 'اختبار انتهاء صلاحية الجلسة' : 'Test expired-session flow'}</span></div>
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <button class="btn btn-primary btn-block" onclick="changeScreen('focus')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <span>${t.startFocus}</span>
+              </button>
+
+              <button class="btn btn-outline btn-block" onclick="alert('${lang === 'ar' ? 'أحسنت! تم إكمال المهمة' : 'Marked as completed!'}'); changeScreen('today');">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>${lang === 'ar' ? 'تعليم كمكتملة' : 'Mark as Complete'}</span>
+              </button>
+            </div>
+          `;
+
+        // ----------------------------------------------------
+        // SCREEN 7: TASKS MANAGEMENT
+        // ----------------------------------------------------
+        case 'tasks':
+          return `
+            <div class="screen-tasks">
+              <div class="app-header" style="padding:8px 0 0;">
+                <div class="app-header-title">${t.allTasks}</div>
+                <div class="sync-chip">
+                  <span class="sync-dot synced"></span>
+                  <span>6 ${lang === 'ar' ? 'مهام' : 'tasks'}</span>
+                </div>
+              </div>
+
+              <div class="search-input-box">
+                <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" class="search-input" placeholder="${t.searchPlaceholder}">
+              </div>
+
+              <div class="tasks-tabs-row">
+                <div class="task-tab-pill active">${t.tabAll} (6)</div>
+                <div class="task-tab-pill">${t.tabInbox} (2)</div>
+                <div class="task-tab-pill">${t.tabUpcoming} (3)</div>
+                <div class="task-tab-pill">${t.tabCompleted} (1)</div>
+              </div>
+
+              <!-- Tasks Items List -->
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <div class="task-card-item" onclick="changeScreen('task_details')">
+                  <div class="task-check-circle" onclick="event.stopPropagation();this.classList.toggle('completed');"></div>
+                  <div class="task-item-content">
+                    <div class="task-item-title">${lang === 'ar' ? 'إعادة هيكلة كود المصادقة والـ Routing' : 'Refactor Auth Architecture'}</div>
+                    <div class="task-item-meta">
+                      <span class="badge badge-work">Work</span>
+                      <span class="badge badge-priority-high">High</span>
+                      <span>⏱️ 45m</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="task-card-item" onclick="changeScreen('task_details')">
+                  <div class="task-check-circle" onclick="event.stopPropagation();this.classList.toggle('completed');"></div>
+                  <div class="task-item-content">
+                    <div class="task-item-title">${lang === 'ar' ? 'اختبار تكامل قاعدة بيانات Drift' : 'Drift Database Integration Test'}</div>
+                    <div class="task-item-meta">
+                      <span class="badge badge-learning">Learning</span>
+                      <span class="badge badge-priority-med">Medium</span>
+                      <span>⏱️ 30m</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="task-card-item" onclick="changeScreen('task_details')">
+                  <div class="task-check-circle completed" onclick="event.stopPropagation();this.classList.toggle('completed');">✓</div>
+                  <div class="task-item-content">
+                    <div class="task-item-title completed-text">${lang === 'ar' ? 'تحديد الألوان والـ Typography في الثيم' : 'Define Color Palette & Fonts in Theme'}</div>
+                    <div class="task-item-meta">
+                      <span class="badge badge-work">Work</span>
+                      <span>⏱️ 30m</span>
+                      <span style="color:var(--success);">Done</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="task-card-item" onclick="changeScreen('task_details')">
+                  <div class="task-check-circle" onclick="event.stopPropagation();this.classList.toggle('completed');"></div>
+                  <div class="task-item-content">
+                    <div class="task-item-title">${lang === 'ar' ? 'جلسة مشي 30 دقيقة بدون هواتف' : '30-minute Mindful Walk'}</div>
+                    <div class="task-item-meta">
+                      <span class="badge badge-health">Health</span>
+                      <span class="badge badge-priority-low">Low</span>
+                      <span>⏱️ 30m</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Floating Action Button -->
+              <button class="fab-btn" onclick="changeScreen('create_task')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </button>
+            </div>
+          `;
+
+        // ----------------------------------------------------
+        // SCREEN 8: DAY PLANNER
+        // ----------------------------------------------------
+        case 'dayplanner':
+          return `
+            <div class="screen-day-planner">
+              <div class="app-header" style="padding:0 0 8px;">
+                <button class="header-icon-btn" onclick="changeScreen('today')">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                </button>
+                <div class="app-header-title">${t.dayPlannerTitle}</div>
+                <button class="header-icon-btn" onclick="changeScreen('create_task')">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+              </div>
+
+              <!-- Day Picker Strip -->
+              <div class="day-selector-strip">
+                <div class="day-pill-item"><span>${lang === 'ar' ? 'سبت' : 'Sat'}</span><span style="font-size:14px;font-weight:700;">24</span></div>
+                <div class="day-pill-item"><span>${lang === 'ar' ? 'أحد' : 'Sun'}</span><span style="font-size:14px;font-weight:700;">25</span></div>
+                <div class="day-pill-item"><span>${lang === 'ar' ? 'إثنين' : 'Mon'}</span><span style="font-size:14px;font-weight:700;">26</span></div>
+                <div class="day-pill-item"><span>${lang === 'ar' ? 'ثلاثاء' : 'Tue'}</span><span style="font-size:14px;font-weight:700;">27</span></div>
+                <div class="day-pill-item active"><span>${lang === 'ar' ? 'أربعاء' : 'Wed'}</span><span style="font-size:14px;font-weight:700;">28</span></div>
+                <div class="day-pill-item"><span>${lang === 'ar' ? 'خميس' : 'Thu'}</span><span style="font-size:14px;font-weight:700;">29</span></div>
+              </div>
+
+              <!-- Capacity Card -->
+              <div class="capacity-banner">
+                <div>
+                  <div style="font-weight:700;color:var(--text-primary);">${t.capacityText}</div>
+                  <div style="font-size:11px;color:var(--success);font-weight:600;">✓ ${t.freeBuffer} · ${lang === 'ar' ? 'الخطة واقعية' : 'Realistic plan'}</div>
+                </div>
+                <button class="btn btn-sm btn-secondary" onclick="alert('${lang === 'ar' ? 'تمت إعادة ضبط فترات التأخير تلقائيًا' : 'Delays adjusted safely!'}')">${lang === 'ar' ? 'إعادة ضبط' : 'Re-balance'}</button>
+              </div>
+
+              <!-- Visual Timeline Hours Grid -->
+              <div class="planner-timeline-grid">
+                <div class="timeline-hour-row">
+                  <div class="hour-label">09:00</div>
+                  <div class="planner-slot-area">
+                    <div class="schedule-block-box" style="height:46px;">
+                      <strong>Design Tokens Review</strong> (45m)
+                    </div>
+                  </div>
+                </div>
+
+                <div class="timeline-hour-row">
+                  <div class="hour-label">10:00</div>
+                  <div class="planner-slot-area">
+                    <div class="schedule-block-box" style="height:52px;background:var(--primary-sage-tint);">
+                      <strong>Refactor Auth Architecture</strong> (45m)
+                      <span class="badge badge-priority-high" style="margin-inline-start:6px;">High</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="timeline-hour-row">
+                  <div class="hour-label">11:00</div>
+                  <div class="planner-slot-area">
+                    <div class="schedule-block-box conflict" style="height:54px;">
+                      <strong>API Integration & Tests</strong> (45m)
+                      <div style="font-size:11px;color:var(--warning);font-weight:600;">⚠️ ${lang === 'ar' ? 'تعارض: تأخير 15 دقيقة' : 'Conflict: 15m overlap'}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="timeline-hour-row">
+                  <div class="hour-label">12:00</div>
+                  <div class="planner-slot-area" style="border-style:solid;border-color:color-mix(in srgb, var(--success) 30%, transparent);background:color-mix(in srgb, var(--success) 5%, transparent);border-radius:6px;padding:6px 12px;font-size:11px;color:var(--success);font-weight:600;">
+                    ☕ ${lang === 'ar' ? 'فترة راحة وغداء مريحة (45 دقيقة)' : 'Buffer & Lunch Break (45m)'}
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+
+        // ----------------------------------------------------
+        // SCREEN 9: FOCUS SESSION
+        // ----------------------------------------------------
+        case 'focus':
+          return `
+            <div class="screen-focus-session">
+              <div class="app-header" style="padding:0;background:transparent;">
+                <button class="header-icon-btn" onclick="changeScreen('today')">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+                <span class="badge badge-work">Work • 45m</span>
+                <button class="header-icon-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                </button>
+              </div>
+
+              <div>
+                <h2 style="font-size:18px;font-weight:700;color:var(--text-primary);margin-top:10px;">${lang === 'ar' ? 'إعادة هيكلة كود المصادقة' : 'Refactor Auth Architecture'}</h2>
+                <p style="font-size:12px;color:var(--text-secondary);margin-top:4px;">${lang === 'ar' ? 'جلسة تركيز عميق وهادئ' : 'Deep calm focus block'}</p>
+
+                <!-- Big Circular Timer -->
+                <div class="focus-timer-ring-wrap">
+                  <svg width="220" height="220" viewBox="0 0 220 220">
+                    <circle cx="110" cy="110" r="95" stroke="var(--border-subtle)" stroke-width="8" fill="transparent"/>
+                    <circle cx="110" cy="110" r="95" stroke="var(--primary-sage)" stroke-width="8" fill="transparent"
+                            stroke-dasharray="596.9" stroke-dashoffset="260" stroke-linecap="round"
+                            transform="rotate(-90 110 110)"/>
+                  </svg>
+                  <div class="focus-timer-digits" id="timerValue">24:18</div>
+                </div>
+
+                <div class="focus-timer-sub">20:42 ${lang === 'ar' ? 'مضت من 45:00 مخططة' : 'elapsed of 45:00 planned'}</div>
+
+                <!-- Controls -->
+                <div class="focus-controls-row">
+                  <button class="btn-timer-primary" id="timerControl" type="button" onclick="toggleTimer()" aria-label="${lang === 'ar' ? 'إيقاف مؤقت' : 'Pause timer'}" aria-pressed="true">
+                    <svg id="timerPlayIcon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <button class="btn btn-outline btn-block" onclick="alert('${lang === 'ar' ? 'رائع! تم تسجيل 25 دقيقة تركيز فعلي.' : 'Great job! 25m logged.'}'); changeScreen('today');">
+                  ${t.finishSession}
+                </button>
+                <a class="auth-link" style="font-size:12px;text-align:center;" onclick="changeScreen('task_details')">${lang === 'ar' ? 'عرض تفاصيل المهمة' : 'View Task Details'}</a>
+              </div>
+            </div>
+          `;
+
+        // ----------------------------------------------------
+        // SCREEN 10: DAILY REVIEW
+        // ----------------------------------------------------
+        case 'daily_review':
+          return `
+            <div class="screen-daily-review">
+              <div class="app-header" style="padding:0 0 4px;">
+                <button class="header-icon-btn" onclick="changeScreen('today')">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                </button>
+                <div class="app-header-title">${lang === 'ar' ? 'مراجعة اليوم' : 'Daily review'}</div>
+                <div style="width:36px;"></div>
+              </div>
+
+              <div class="review-hero">
+                <div style="font-size:12px;opacity:.82;">${lang === 'ar' ? 'الأربعاء، 28 أكتوبر' : 'Wednesday, October 28'}</div>
+                <div style="display:flex;align-items:end;justify-content:space-between;margin-top:6px;position:relative;z-index:1;">
+                  <div><div style="font-size:30px;font-weight:700;line-height:1;">76%</div><div style="font-size:12px;opacity:.9;margin-top:5px;">${lang === 'ar' ? 'أنجزت 3 من 4 مهام مخططة' : 'You completed 3 of 4 planned tasks'}</div></div>
+                  <div style="text-align:end;font-size:12px;opacity:.92;">⏱️ 2h 40m<br>${lang === 'ar' ? 'تركيز فعلي' : 'actual focus'}</div>
+                </div>
+              </div>
+
+              <div class="card" style="padding:14px;">
+                <div style="font-size:13px;font-weight:700;margin-bottom:7px;">${lang === 'ar' ? 'ما سار جيدًا' : 'What went well'}</div>
+                <p style="font-size:12px;color:var(--text-secondary);line-height:1.6;">${lang === 'ar' ? 'أنهيت أهم مهمة قبل الظهر وحافظت على فترة راحة حقيقية بين جلسات التركيز.' : 'You finished the most important task before noon and protected a real break between focus blocks.'}</p>
+              </div>
+
+              <div class="card" style="padding:14px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><div style="font-size:13px;font-weight:700;">${lang === 'ar' ? 'ما لم يكتمل' : 'Still open'}</div><span class="badge badge-status-todo">1</span></div>
+                <div class="organize-task-row" style="padding-top:4px;"><div class="organize-task-icon">📚</div><div style="flex:1;"><strong style="font-size:13px;">${lang === 'ar' ? 'اختبار تكامل قاعدة البيانات' : 'Database integration test'}</strong><div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">30m · ${lang === 'ar' ? 'تبقى في قائمة المهام' : 'stays in your task list'}</div></div></div>
+                <p style="font-size:11px;color:var(--text-muted);line-height:1.5;margin-top:10px;">${lang === 'ar' ? 'لن ننقلها تلقائيًا؛ اختر وقتها عندما تكون مستعدًا.' : 'It will not move automatically; choose its next time when you are ready.'}</p>
+              </div>
+
+              <button class="btn btn-primary btn-block" onclick="changeScreen('dayplanner')">${lang === 'ar' ? 'تخطيط الغد بهدوء' : 'Plan tomorrow calmly'}</button>
+            </div>
+          `;
+
+        // ----------------------------------------------------
+        // SCREEN 11: INSIGHTS
+        // ----------------------------------------------------
+        case 'insights':
+          return `
+            <div class="screen-insights">
+              <div class="app-header" style="padding:8px 0 0;">
+                <div class="app-header-title">${t.insightsTitle}</div>
+                <div class="sync-chip">
+                  <span class="sync-dot synced"></span>
+                  <span>${lang === 'ar' ? 'محدث' : 'Updated'}</span>
+                </div>
+              </div>
+
+              <div class="insights-period-switch">
+                <div class="period-btn active">${lang === 'ar' ? 'هذا الأسبوع' : 'This Week'}</div>
+                <div class="period-btn">${lang === 'ar' ? 'هذا الشهر' : 'This Month'}</div>
+              </div>
+
+              <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">${t.insightsSub}</p>
+
+              <!-- Metric Cards -->
+              <div class="insights-metrics-grid">
+                <div class="insight-card">
+                  <div style="font-size:11px;color:var(--text-secondary);">${t.focusTimeTitle}</div>
+                  <div style="font-size:22px;font-weight:700;color:var(--primary-sage);margin:4px 0;">14h 20m</div>
+                  <div style="font-size:11px;color:var(--success);">+1h 15m vs last wk</div>
+                </div>
+
+                <div class="insight-card">
+                  <div style="font-size:11px;color:var(--text-secondary);">${t.accuracyTitle}</div>
+                  <div style="font-size:22px;font-weight:700;color:var(--success);margin:4px 0;">86%</div>
+                  <div style="font-size:11px;color:var(--text-secondary);">${lang === 'ar' ? 'تقدير واقعي جدًا' : 'Realistic estimation'}</div>
+                </div>
+              </div>
+
+              <!-- Weekly Bar Chart -->
+              <div class="chart-container-box">
+                <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-bottom:12px;">
+                  <span>${lang === 'ar' ? 'ساعات التركيز اليومية' : 'Daily Focus Hours'}</span>
+                  <span style="font-weight:400;color:var(--text-secondary);font-size:11px;">Avg: 2.4h/day</span>
+                </div>
+                
+                <div class="bar-chart-visual">
+                  <div class="chart-bar-col"><div class="chart-bar-fill" style="height:65px;"></div><span class="chart-day-label">Sat</span></div>
+                  <div class="chart-bar-col"><div class="chart-bar-fill" style="height:80px;"></div><span class="chart-day-label">Sun</span></div>
+                  <div class="chart-bar-col"><div class="chart-bar-fill" style="height:90px;"></div><span class="chart-day-label">Mon</span></div>
+                  <div class="chart-bar-col"><div class="chart-bar-fill" style="height:45px;"></div><span class="chart-day-label">Tue</span></div>
+                  <div class="chart-bar-col today-bar"><div class="chart-bar-fill" style="height:70px;"></div><span class="chart-day-label" style="font-weight:700;color:var(--success);">Wed</span></div>
+                  <div class="chart-bar-col"><div class="chart-bar-fill" style="height:20px;opacity:0.3;"></div><span class="chart-day-label">Thu</span></div>
+                  <div class="chart-bar-col"><div class="chart-bar-fill" style="height:10px;opacity:0.3;"></div><span class="chart-day-label">Fri</span></div>
+                </div>
+              </div>
+
+              <!-- Positive Highlights (What Went Well) -->
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <div style="font-size:13px;font-weight:700;color:var(--text-primary);">${t.whatWentWell}</div>
+                <div class="gentle-note-box">
+                  <span style="font-size:16px;">🌱</span>
+                  <div>${lang === 'ar' ? 'التزمت بفترات راحة حقيقية حمَت تركيزك من الإرهاق.' : 'Consistent buffer breaks protected your focus from burnout.'}</div>
+                </div>
+                <div class="gentle-note-box">
+                  <span style="font-size:16px;">🎯</span>
+                  <div>${lang === 'ar' ? 'تعاملت مع تأخير الثلاثاء بإعادة جدولة هادئة بدون ضغط.' : 'Adapted to Tuesday delay without losing progress or morale.'}</div>
+                </div>
+              </div>
+            </div>
+          `;
+
+        // ----------------------------------------------------
+        // SCREEN 11: SETTINGS
+        // ----------------------------------------------------
+        case 'settings':
+          return `
+            <div class="screen-settings">
+              <div class="app-header" style="padding:8px 0 0;">
+                <div class="app-header-title">${t.settingsTitle}</div>
+                <div style="width:20px;"></div>
+              </div>
+
+              <!-- Local profile summary -->
+              <div class="card" style="display:flex;align-items:center;gap:12px;">
+                <div class="user-avatar" style="width:50px;height:50px;font-size:18px;">ع</div>
+                <div style="flex:1;">
+                  <div style="font-size:15px;font-weight:700;color:var(--text-primary);">عمر السيد</div>
+                  <div style="font-size:12px;color:var(--text-secondary);">${lang === 'ar' ? 'ملف محلي على هذا الجهاز' : 'Local profile on this device'}</div>
+                </div>
+                <button class="btn btn-sm btn-outline">${lang === 'ar' ? 'تعديل' : 'Edit'}</button>
+              </div>
+
+              <!-- Preferences Section -->
+              <div class="settings-group">
+                <div class="settings-group-header">${t.prefSection}</div>
+                
+                <div class="settings-row" onclick="setLanguage(currentLang === 'ar' ? 'en' : 'ar')">
+                  <div class="settings-row-left">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    <span>${t.langLabel}</span>
+                  </div>
+                  <div class="settings-row-right">
+                    <span style="font-weight:600;color:var(--primary-sage);">${lang === 'ar' ? 'العربية' : 'English'}</span>
+                    <span>›</span>
+                  </div>
+                </div>
+
+                <div class="settings-row" onclick="setTheme(currentTheme === 'light' ? 'dark' : 'light')">
+                  <div class="settings-row-left">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    <span>${t.themeLabel}</span>
+                  </div>
+                  <div class="settings-row-right">
+                    <span>${currentTheme === 'light' ? (lang === 'ar' ? 'نهاري هادئ' : 'Calm Light') : (lang === 'ar' ? 'ليلي' : 'Dark')}</span>
+                    <span>›</span>
+                  </div>
+                </div>
+
+                <div class="settings-row">
+                  <div class="settings-row-left">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span>${lang === 'ar' ? 'ساعات العمل القصوى يومياً' : 'Daily Work Hours Cap'}</span>
+                  </div>
+                  <div class="settings-row-right">
+                    <span>6h / day</span>
+                    <span>›</span>
+                  </div>
+                </div>
+
+                <div class="settings-row">
+                  <div class="settings-row-left">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+                    <span>${lang === 'ar' ? 'الوقت المتاح اليوم' : 'Available time today'}</span>
+                  </div>
+                  <div class="settings-row-right"><span style="font-weight:600;color:var(--primary-sage);">09:00 — 17:00</span><span>›</span></div>
+                </div>
+
+                <div class="settings-row">
+                  <div class="settings-row-left">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v3M16 2v3M4 10h16M12 14v4M10 16h4"/><rect x="4" y="5" width="16" height="15" rx="2"/></svg>
+                    <span>${lang === 'ar' ? 'استراحة بعد التركيز' : 'Break after focus'}</span>
+                  </div>
+                  <div class="settings-row-right"><span>15m / 90m</span><span>›</span></div>
+                </div>
+              </div>
+
+              <!-- Local-first data section -->
+              <div class="settings-group">
+                <div class="settings-group-header">${lang === 'ar' ? 'البيانات على جهازك' : 'On-device data'}</div>
+                <div class="settings-row">
+                  <div class="settings-row-left">
+                    <span class="sync-dot synced"></span>
+                    <span>${lang === 'ar' ? 'محفوظ محليًا — يعمل دون إنترنت' : 'Saved locally — works offline'}</span>
+                  </div>
+                  <div class="settings-row-right">
+                    <span style="color:var(--success);font-weight:600;">${lang === 'ar' ? 'جاهز' : 'Ready'}</span>
+                  </div>
+                </div>
+                <div class="settings-row" onclick="alert('${lang === 'ar' ? 'سيتم دعم النسخ الاحتياطي الاختياري لاحقًا.' : 'Optional backup will be available later.'}')">
+                  <div class="settings-row-left">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                    <span>${lang === 'ar' ? 'نسخ احتياطي اختياري' : 'Optional backup'}</span>
+                  </div>
+                  <div class="settings-row-right">
+                    <span>${lang === 'ar' ? 'قريبًا' : 'Soon'}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- About & Logout -->
+              <div style="text-align:center;margin-top:10px;">
+                <button class="btn btn-outline btn-block" style="color:var(--danger);border-color:color-mix(in srgb, var(--danger) 30%, transparent);" onclick="changeScreen('onboarding')">
+                  ${lang === 'ar' ? 'تسجيل الخروج' : 'Sign Out'}
+                </button>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:12px;">FlowDay v1.0.0 (Calm Productivity Edition)</div>
+              </div>
+            </div>
+          `;
+
+        // ----------------------------------------------------
+        // SCREEN 12: DESIGN SYSTEM COMPONENTS
+        // ----------------------------------------------------
+        case 'design_system':
+          return `
+            <div class="screen-design-system">
+              <div class="app-header" style="padding:0 0 8px;">
+                <div class="app-header-title">Design System & UI Kit</div>
+                <span class="badge badge-work">Tokens</span>
+              </div>
+
+              <!-- Colors Section -->
+              <div>
+                <div class="ds-section-title">Color Palette (Clear Current)</div>
+                <div class="palette-grid">
+                  <div class="color-swatch" style="background:var(--surface);">
+                    <div class="color-swatch-box" style="background:var(--primary-sage);"></div>
+                    <strong>Teal / Primary</strong>
+                    <code>#176B68</code>
+                  </div>
+                  <div class="color-swatch" style="background:var(--surface);">
+                    <div class="color-swatch-box" style="background:var(--bg-main); border:1px solid var(--border-medium);"></div>
+                    <strong>Background</strong>
+                    <code>#F6F8F7</code>
+                  </div>
+                  <div class="color-swatch" style="background:var(--surface);">
+                    <div class="color-swatch-box" style="background:var(--surface); border:1px solid var(--border-medium);"></div>
+                    <strong>Surface</strong>
+                    <code>#FFFFFF</code>
+                  </div>
+                  <div class="color-swatch" style="background:var(--surface);">
+                    <div class="color-swatch-box" style="background:var(--text-primary);"></div>
+                    <strong>Text Primary</strong>
+                    <code>#172B2A</code>
+                  </div>
+                  <div class="color-swatch" style="background:var(--surface);">
+                    <div class="color-swatch-box" style="background:var(--text-secondary);"></div>
+                    <strong>Text Secondary</strong>
+                    <code>#60716F</code>
+                  </div>
+                  <div class="color-swatch" style="background:var(--surface);">
+                    <div class="color-swatch-box" style="background:var(--success);"></div>
+                    <strong>Success</strong>
+                    <code>#197C62</code>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Buttons Section -->
+              <div>
+                <div class="ds-section-title">Buttons States</div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <button class="btn btn-primary">Primary Button</button>
+                  <button class="btn btn-secondary">Secondary Button</button>
+                  <button class="btn btn-outline">Outline Button</button>
+                  <button class="btn btn-primary btn-loading">Loading</button>
+                  <button class="btn btn-primary btn-disabled">Disabled State</button>
+                </div>
+              </div>
+
+              <!-- Badges Section -->
+              <div>
+                <div class="ds-section-title">Badges & Tags</div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+                  <span class="badge badge-work">Work</span>
+                  <span class="badge badge-learning">Learning</span>
+                  <span class="badge badge-personal">Personal</span>
+                  <span class="badge badge-health">Health</span>
+                </div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                  <span class="badge badge-priority-high">High Priority</span>
+                  <span class="badge badge-priority-med">Medium Priority</span>
+                  <span class="badge badge-priority-low">Low Priority</span>
+                  <span class="badge badge-status-completed">✓ Done</span>
+                </div>
+              </div>
+
+              <!-- Sync Statuses -->
+              <div>
+                <div class="ds-section-title">Sync & Connection States</div>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                  <div class="sync-chip"><span class="sync-dot synced"></span><span>Synced with Cloud (2m ago)</span></div>
+                  <div class="sync-chip"><span class="sync-dot syncing"></span><span>Syncing local changes...</span></div>
+                  <div class="sync-chip"><span class="sync-dot offline"></span><span>Offline Mode (Local database active)</span></div>
+                  <div class="sync-chip"><span class="sync-dot error"></span><span>Sync Failed — Tap to retry</span></div>
+                </div>
+              </div>
+
+              <!-- Empty State -->
+              <div>
+                <div class="ds-section-title">Empty State Component</div>
+                <div class="card empty-state-box">
+                  <div class="empty-state-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg>
+                  </div>
+                  <strong style="font-size:14px;color:var(--text-primary);">${lang === 'ar' ? 'لا توجد مهام حالياً' : 'No tasks scheduled'}</strong>
+                  <p style="font-size:12px;color:var(--text-secondary);max-width:240px;">${lang === 'ar' ? 'يومك هادئ تماماً. يمكنك إضافة مهمة أو التمتع بوقت الفراغ.' : 'Enjoy your free buffer or capture new ideas.'}</p>
+                  <button class="btn btn-sm btn-primary" onclick="changeScreen('create_task')">${lang === 'ar' ? '+ إضافة مهمة' : '+ Add Task'}</button>
+                </div>
+              </div>
+            </div>
+          `;
+
+        default:
+          return `<div>Screen not found</div>`;
+      }
+    }
+
+    function renderScreen(screenId) {
+      const container = document.getElementById('activeScreenContent');
+      if (container) {
+        container.innerHTML = getScreenHTML(screenId, currentLang);
+      }
+    }
+
+    // Grid Renderer for All Screens (Figma / Behance Overview)
+    function renderGrid() {
+      const screens = [
+        { id: "today", title: "03. Today — Home Dashboard" },
+        { id: "tasks", title: "07. Tasks Management" },
+        { id: "dayplanner", title: "08. Day Planner" },
+        { id: "focus", title: "09. Focus Session" },
+        { id: "braindump", title: "04. Brain Dump" },
+        { id: "create_task", title: "05. Create / Edit Task" },
+        { id: "task_details", title: "06. Task Details" },
+        { id: "daily_review", title: "13. Daily Review" },
+        { id: "insights", title: "10. Insights & Analytics" },
+        { id: "settings", title: "11. Settings" },
+        { id: "onboarding", title: "01. Onboarding Flow" },
+        { id: "auth", title: "02. Authentication" },
+        { id: "design_system", title: "12. Design System Components" }
+      ];
+
+      const gridContainer = document.getElementById('gridContainer');
+      gridContainer.innerHTML = screens.map(s => `
+        <div class="grid-screen-card">
+          <div class="grid-screen-title">
+            <span>${s.title}</span>
+            <span class="grid-screen-num">Mobile View</span>
+          </div>
+          <div class="grid-device-frame">
+            <div class="status-bar">
+              <span>09:41</span>
+              <div class="dynamic-island" style="width:90px;height:22px;"></div>
+              <div class="status-bar-icons">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C7.5 3 3.75 4.8 1 7.7L12 21 23 7.7C20.25 4.8 16.5 3 12 3z"/></svg>
+              </div>
+            </div>
+            <div class="screen-content" style="flex:1;">
+              ${getScreenHTML(s.id, currentLang)}
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Interactive Timer Simulator
+    let isTimerRunning = true;
+    let timerSeconds = 24 * 60 + 18;
+    function toggleTimer() {
+      isTimerRunning = !isTimerRunning;
+      const icon = document.getElementById('timerPlayIcon');
+      const control = document.getElementById('timerControl');
+      if (icon) {
+        icon.innerHTML = isTimerRunning 
+          ? '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>' 
+          : '<polygon points="5 3 19 12 5 21 5 3"/>';
+      }
+      if (control) {
+        control.setAttribute('aria-pressed', String(isTimerRunning));
+        control.setAttribute('aria-label', currentLang === 'ar'
+          ? (isTimerRunning ? 'إيقاف مؤقت' : 'استئناف الجلسة')
+          : (isTimerRunning ? 'Pause timer' : 'Resume timer'));
+      }
+    }
+
+    setInterval(() => {
+      if (isTimerRunning && timerSeconds > 0 && currentScreen === 'focus') {
+        timerSeconds--;
+        const mins = Math.floor(timerSeconds / 60);
+        const secs = timerSeconds % 60;
+        const el = document.getElementById('timerValue');
+        if (el) el.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      }
+    }, 1000);
+
+    // Initial load
+    renderScreen('today');
+  </script>
+</body>
+</html>

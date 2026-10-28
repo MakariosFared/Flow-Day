@@ -31,24 +31,24 @@ class DurationPickerField extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'Estimated Duration *',
+            Text(
+              'المدة التقديرية *',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+                color: AppColors.getPrimaryText(context),
               ),
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: AppColors.primaryContainer,
+                color: AppColors.getPrimarySubtle(context),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
                 DateTimeUtils.formatDuration(selectedDuration),
-                style: const TextStyle(
-                  color: AppColors.primary,
+                style: TextStyle(
+                  color: AppColors.getPrimaryColor(context),
                   fontWeight: FontWeight.w700,
                   fontSize: 13,
                 ),
@@ -69,15 +69,17 @@ class DurationPickerField extends StatelessWidget {
               labelStyle: TextStyle(
                 fontSize: 12,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                color: isSelected ? Colors.white : AppColors.textPrimary,
+                color: isSelected ? Colors.white : AppColors.getPrimaryText(context),
               ),
-              selectedColor: AppColors.primary,
-              backgroundColor: AppColors.surfaceVariant.withValues(alpha: 0.5),
+              selectedColor: AppColors.getPrimaryColor(context),
+              backgroundColor: AppColors.getSurfaceSecondary(context),
               showCheckmark: false,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
                 side: BorderSide(
-                  color: isSelected ? AppColors.primary : AppColors.border,
+                  color: isSelected
+                      ? AppColors.getPrimaryColor(context)
+                      : AppColors.getBorder(context),
                 ),
               ),
             );

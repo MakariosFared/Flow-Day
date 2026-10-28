@@ -1,27 +1,107 @@
+import 'package:flutter/material.dart';
+
 enum TaskStatus { pending, scheduled, inProgress, completed, cancelled }
 
 enum TaskPriority {
-  low(1),
-  medium(2),
-  high(3);
+  low(1, 'منخفضة', Color(0xFF8A9896)),
+  medium(2, 'متوسطة', Color(0xFFA96717)),
+  high(3, 'عالية', Color(0xFFB84D57));
 
-  const TaskPriority(this.rank);
+  const TaskPriority(this.rank, this.labelAr, this.color);
   final int rank;
+  final String labelAr;
+  final Color color;
 }
 
-enum EnergyLevel { low, medium, high }
+enum EnergyLevel {
+  low('طاقة هادئة', Icons.battery_charging_full_rounded),
+  medium('طاقة متوسطة', Icons.bolt_rounded),
+  high('طاقة عالية', Icons.electric_bolt_rounded);
 
-enum PreferredTimeWindow { anytime, morning, afternoon, evening }
+  const EnergyLevel(this.labelAr, this.icon);
+  final String labelAr;
+  final IconData icon;
+}
 
-/// A user intention: what needs to be accomplished, independent of its schedule.
+enum PreferredTimeWindow {
+  anytime('أي وقت في اليوم'),
+  morning('صباحًا (09:00 - 12:00)'),
+  afternoon('بعد الظهر (12:00 - 16:00)'),
+  evening('مساءً (16:00 - 20:00)');
+
+  const PreferredTimeWindow(this.labelAr);
+  final String labelAr;
+}
+
+class Category {
+  const Category({
+    required this.id,
+    required this.name,
+    required this.nameAr,
+    required this.icon,
+    required this.color,
+    required this.bgColor,
+  });
+
+  final String id;
+  final String name;
+  final String nameAr;
+  final String icon;
+  final Color color;
+  final Color bgColor;
+
+  static const List<Category> defaultCategories = [
+    Category(
+      id: 'cat-work',
+      name: 'Work',
+      nameAr: 'العمل',
+      icon: '💻',
+      color: Color(0xFF2B6680),
+      bgColor: Color(0xFFE8F3F8),
+    ),
+    Category(
+      id: 'cat-learning',
+      name: 'Learning',
+      nameAr: 'التعلم',
+      icon: '📚',
+      color: Color(0xFF7451A3),
+      bgColor: Color(0xFFF2ECFA),
+    ),
+    Category(
+      id: 'cat-health',
+      name: 'Health',
+      nameAr: 'الصحة والرياضة',
+      icon: '🏋️',
+      color: Color(0xFF4C7B58),
+      bgColor: Color(0xFFEAF4EA),
+    ),
+    Category(
+      id: 'cat-personal',
+      name: 'Personal',
+      nameAr: 'حياة شخصية',
+      icon: '🏠',
+      color: Color(0xFFA8583B),
+      bgColor: Color(0xFFFBEDE8),
+    ),
+    Category(
+      id: 'cat-reading',
+      name: 'Reading',
+      nameAr: 'القراءة',
+      icon: '📖',
+      color: Color(0xFF357A7B),
+      bgColor: Color(0xFFE6F5F4),
+    ),
+  ];
+}
+
 class Task {
-  Task({
+  const Task({
     required this.id,
     required this.title,
     required this.estimatedDuration,
-    required this.status,
+    this.status = TaskStatus.pending,
     required this.createdAt,
-    required this.updatedAt,
+    this.updatedAt,
     this.description,
     this.categoryId,
     this.priority = TaskPriority.medium,
@@ -29,14 +109,8 @@ class Task {
     this.dueDate,
     this.preferredTimeWindow = PreferredTimeWindow.anytime,
     this.energyLevel,
-    this.recurrenceTemplateId,
     this.completedAt,
-  }) : assert(title.trim().isNotEmpty, 'Task title cannot be empty'),
-       assert(
-         !estimatedDuration.isNegative && estimatedDuration > Duration.zero,
-         'estimatedDuration must be positive',
-       ),
-       assert(!actualDuration.isNegative, 'actualDuration cannot be negative');
+  });
 
   final String id;
   final String title;
@@ -49,32 +123,9 @@ class Task {
   final DateTime? dueDate;
   final PreferredTimeWindow preferredTimeWindow;
   final EnergyLevel? energyLevel;
-  final String? recurrenceTemplateId;
   final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? updatedAt;
   final DateTime? completedAt;
-
-  /// Validates whether a lifecycle state transition is allowed per product spec.
-  bool canTransitionTo(TaskStatus newStatus) {
-    if (status == newStatus) return true;
-    return switch (status) {
-      TaskStatus.pending =>
-        newStatus == TaskStatus.scheduled || newStatus == TaskStatus.cancelled,
-      TaskStatus.scheduled =>
-        newStatus == TaskStatus.pending ||
-            newStatus == TaskStatus.inProgress ||
-            newStatus == TaskStatus.cancelled,
-      TaskStatus.inProgress => newStatus == TaskStatus.completed,
-      TaskStatus.completed => false,
-      TaskStatus.cancelled => false,
-    };
-  }
-
-  /// UI-only temporal state; deliberately not stored as [TaskStatus].
-  bool isOverdue({required DateTime now, DateTime? scheduledEnd}) =>
-      status == TaskStatus.inProgress &&
-      scheduledEnd != null &&
-      now.isAfter(scheduledEnd);
 
   Task copyWith({
     String? id,
@@ -88,7 +139,6 @@ class Task {
     DateTime? dueDate,
     PreferredTimeWindow? preferredTimeWindow,
     EnergyLevel? energyLevel,
-    String? recurrenceTemplateId,
     DateTime? createdAt,
     DateTime? updatedAt,
     DateTime? completedAt,
@@ -105,99 +155,9 @@ class Task {
       dueDate: dueDate ?? this.dueDate,
       preferredTimeWindow: preferredTimeWindow ?? this.preferredTimeWindow,
       energyLevel: energyLevel ?? this.energyLevel,
-      recurrenceTemplateId: recurrenceTemplateId ?? this.recurrenceTemplateId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       completedAt: completedAt ?? this.completedAt,
-    );
-  }
-}
-
-class Category {
-  const Category({required this.id, required this.name, required this.icon});
-  final String id;
-  final String name;
-  final String icon;
-
-  static const List<Category> phase1Defaults = [
-    Category(id: 'cat-work', name: 'Work', icon: '💻'),
-    Category(id: 'cat-learning', name: 'Learning', icon: '📚'),
-    Category(id: 'cat-health', name: 'Health', icon: '🏋️'),
-    Category(id: 'cat-personal', name: 'Personal', icon: '🏠'),
-    Category(id: 'cat-people', name: 'People', icon: '👥'),
-    Category(id: 'cat-reading', name: 'Reading', icon: '📖'),
-  ];
-}
-
-enum RecurrenceType { daily, weekly }
-
-class RecurrenceTemplate {
-  RecurrenceTemplate({
-    required this.id,
-    required this.title,
-    required this.estimatedDuration,
-    required this.recurrenceType,
-    required this.startDate,
-    required this.createdAt,
-    required this.updatedAt,
-    this.description,
-    this.categoryId,
-    this.priority = TaskPriority.medium,
-    this.preferredTimeWindow = PreferredTimeWindow.anytime,
-    this.energyLevel,
-    this.recurrenceDays = const <int>{},
-    this.endDate,
-  }) : assert(
-         recurrenceType == RecurrenceType.daily || recurrenceDays.isNotEmpty,
-         'Weekly recurrence must specify recurrenceDays',
-       );
-
-  final String id;
-  final String title;
-  final String? description;
-  final String? categoryId;
-  final TaskPriority priority;
-  final Duration estimatedDuration;
-  final PreferredTimeWindow preferredTimeWindow;
-  final EnergyLevel? energyLevel;
-  final RecurrenceType recurrenceType;
-  final Set<int> recurrenceDays;
-  final DateTime startDate;
-  final DateTime? endDate;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-
-  RecurrenceTemplate copyWith({
-    String? id,
-    String? title,
-    String? description,
-    String? categoryId,
-    TaskPriority? priority,
-    Duration? estimatedDuration,
-    PreferredTimeWindow? preferredTimeWindow,
-    EnergyLevel? energyLevel,
-    RecurrenceType? recurrenceType,
-    Set<int>? recurrenceDays,
-    DateTime? startDate,
-    DateTime? endDate,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-  }) {
-    return RecurrenceTemplate(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      description: description ?? this.description,
-      categoryId: categoryId ?? this.categoryId,
-      priority: priority ?? this.priority,
-      estimatedDuration: estimatedDuration ?? this.estimatedDuration,
-      preferredTimeWindow: preferredTimeWindow ?? this.preferredTimeWindow,
-      energyLevel: energyLevel ?? this.energyLevel,
-      recurrenceType: recurrenceType ?? this.recurrenceType,
-      recurrenceDays: recurrenceDays ?? this.recurrenceDays,
-      startDate: startDate ?? this.startDate,
-      endDate: endDate ?? this.endDate,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }

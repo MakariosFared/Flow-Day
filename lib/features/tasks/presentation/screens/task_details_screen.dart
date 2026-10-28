@@ -6,6 +6,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/date_time_utils.dart';
 import '../../domain/entities/task.dart';
 import '../controllers/tasks_controller.dart';
+import '../widgets/category_chip.dart';
 import '../widgets/priority_badge.dart';
 
 class TaskDetailsScreen extends ConsumerStatefulWidget {
@@ -17,96 +18,60 @@ class TaskDetailsScreen extends ConsumerStatefulWidget {
 }
 
 class _TaskDetailsScreenState extends ConsumerState<TaskDetailsScreen> {
-  bool _isLoadingAction = false;
+  final List<bool> _subtasks = [true, false, false];
+  final List<String> _subtaskLabels = [
+    'مراجعة النقاط الأساسية وتحديد الأولويات',
+    'تطبيق التعديلات واختبار التوافق',
+    'التأكد من سهولة الاستخدام والانسيابية',
+  ];
 
-  Future<void> _startFocus(Task task) async {
-    setState(() => _isLoadingAction = true);
-    try {
-      final controller = ref.read(tasksControllerProvider);
-      await controller.startFocus(task.id);
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Focus session started')));
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Cannot start focus: $e')));
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isLoadingAction = false);
-      }
-    }
+  void _startFocus(Task task) {
+    ref.read(tasksControllerProvider).startFocus(task.id);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('بدأت جلسة التركيز 🌱')),
+    );
+    context.push('/focus/${task.id}');
   }
 
-  Future<void> _completeTask(Task task) async {
-    setState(() => _isLoadingAction = true);
-    try {
-      final controller = ref.read(tasksControllerProvider);
-      await controller.completeTask(task.id);
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Task completed')));
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Cannot complete task: $e')));
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isLoadingAction = false);
-      }
-    }
+  void _toggleComplete(Task task) {
+    ref.read(tasksControllerProvider).toggleComplete(task.id);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          task.status == TaskStatus.completed
+              ? 'تمت إعادة المهمة للنشطة'
+              : 'رائع! تم اكتمال المهمة بنجاح ✓',
+        ),
+      ),
+    );
   }
 
   Future<void> _deleteTask(Task task) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete Task'),
-        content: Text('Are you sure you want to delete "${task.title}"?'),
+        title: const Text('حذف المهمة'),
+        content: Text('هل أنت متأكد من رغبتك في حذف "${task.title}"؟'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel'),
+            child: const Text('إلغاء'),
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            style: TextButton.styleFrom(
-              foregroundColor: AppColors.priorityHigh,
-            ),
-            child: const Text('Delete'),
+            style: TextButton.styleFrom(foregroundColor: AppColors.danger),
+            child: const Text('حذف'),
           ),
         ],
       ),
     );
 
     if (confirmed == true && mounted) {
-      final controller = ref.read(tasksControllerProvider);
-      final token = await controller.deleteTask(task.id);
-
-      if (mounted) {
-        context.pop();
-        if (token != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('Task deleted'),
-              duration: const Duration(seconds: 5),
-              action: SnackBarAction(
-                label: 'Undo',
-                textColor: AppColors.primary,
-                onPressed: () => controller.undoDelete(token),
-              ),
-            ),
-          );
-        }
-      }
+      ref.read(tasksControllerProvider).deleteTask(task.id);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('تم حذف المهمة')),
+      );
+      context.pop();
     }
   }
 
@@ -115,59 +80,89 @@ class _TaskDetailsScreenState extends ConsumerState<TaskDetailsScreen> {
     final taskAsync = ref.watch(taskByIdProvider(widget.taskId));
     final categoriesAsync = ref.watch(categoriesStreamProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Task Details'),
-        actions: [
-          taskAsync.when(
-            data: (task) => task != null
-                ? Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit_outlined),
-                        tooltip: 'Edit Task',
-                        onPressed: () => context.push('/tasks/${task.id}/edit'),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete_outline_rounded),
-                        tooltip: 'Delete Task',
-                        onPressed: () => _deleteTask(task),
-                      ),
-                    ],
-                  )
-                : const SizedBox.shrink(),
-            loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
-          ),
-        ],
-      ),
-      body: taskAsync.when(
-        loading: () =>
-            const Center(child: CircularProgressIndicator.adaptive()),
-        error: (err, _) => Center(child: Text('Error loading task: $err')),
-        data: (task) {
-          if (task == null) {
-            return const Center(
-              child: Text(
-                'Task not found',
-                style: TextStyle(color: AppColors.textSecondary),
+    final categoriesMap = <String, Category>{};
+    categoriesAsync.whenData((categories) {
+      for (final cat in categories) {
+        categoriesMap[cat.id] = cat;
+      }
+    });
+
+    return taskAsync.when(
+      data: (task) {
+        if (task == null) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('تفاصيل المهمة')),
+            body: const Center(child: Text('المهمة غير موجودة أو تم حذفها')),
+          );
+        }
+
+        final category = task.categoryId != null ? categoriesMap[task.categoryId] : null;
+        final isCompleted = task.status == TaskStatus.completed;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('تفاصيل المهمة'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.edit_outlined),
+                tooltip: 'تعديل المهمة',
+                onPressed: () => context.push('/tasks/${task.id}/edit'),
               ),
-            );
-          }
-
-          Category? category;
-          categoriesAsync.whenData((cats) {
-            category = cats.where((c) => c.id == task.categoryId).firstOrNull;
-          });
-
-          final isCompleted = task.status == TaskStatus.completed;
-
-          return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              IconButton(
+                icon: const Icon(Icons.delete_outline_rounded, color: AppColors.danger),
+                tooltip: 'حذف المهمة',
+                onPressed: () => _deleteTask(task),
+              ),
+            ],
+          ),
+          bottomNavigationBar: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => _toggleComplete(task),
+                      icon: Icon(
+                        isCompleted ? Icons.undo_rounded : Icons.check_circle_outline_rounded,
+                        size: 18,
+                      ),
+                      label: Text(isCompleted ? 'إعادة فتح' : 'اكتمال المهمة'),
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(48),
+                        foregroundColor: isCompleted ? AppColors.getSecondaryText(context) : AppColors.success,
+                        side: BorderSide(
+                          color: isCompleted ? AppColors.getBorderMedium(context) : AppColors.success,
+                        ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _startFocus(task),
+                      icon: const Icon(Icons.play_arrow_rounded, size: 20),
+                      label: const Text('بدء التركيز'),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(48),
+                        backgroundColor: AppColors.getPrimaryColor(context),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Title & Status
+                // Title and Status
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -175,233 +170,145 @@ class _TaskDetailsScreenState extends ConsumerState<TaskDetailsScreen> {
                       child: Text(
                         task.title,
                         style: TextStyle(
-                          fontSize: 22,
+                          fontSize: 20,
                           fontWeight: FontWeight.w700,
-                          letterSpacing: -0.5,
-                          color: isCompleted
-                              ? AppColors.textMuted
-                              : AppColors.textPrimary,
-                          decoration: isCompleted
-                              ? TextDecoration.lineThrough
-                              : null,
+                          color: AppColors.getPrimaryText(context),
+                          decoration: isCompleted ? TextDecoration.lineThrough : null,
+                          height: 1.3,
                         ),
                       ),
                     ),
-                    _StatusBadge(status: task.status),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
 
-                // Metadata Cards
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        _DetailRow(
-                          label: 'Priority',
-                          valueWidget: PriorityBadge(priority: task.priority),
-                        ),
-                        const Divider(height: 20, color: AppColors.divider),
-                        _DetailRow(
-                          label: 'Estimated Duration',
-                          value: DateTimeUtils.formatDuration(
-                            task.estimatedDuration,
-                          ),
-                        ),
-                        if (task.actualDuration > Duration.zero) ...[
-                          const Divider(height: 20, color: AppColors.divider),
-                          _DetailRow(
-                            label: 'Actual Focus Time',
-                            value: DateTimeUtils.formatDuration(
-                              task.actualDuration,
+                // Meta row: Category, Priority, Duration
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    if (category != null)
+                      CategoryChip(category: category, isSelected: true),
+                    PriorityBadge(priority: task.priority),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.getSurfaceSecondary(context),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text('⏱️ ', style: TextStyle(fontSize: 11)),
+                          Text(
+                            'مقدر: ${DateTimeUtils.formatDuration(task.estimatedDuration)}',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.getSecondaryText(context),
                             ),
-                            valueColor: AppColors.primary,
                           ),
                         ],
-                        if (category != null) ...[
-                          const Divider(height: 20, color: AppColors.divider),
-                          _DetailRow(
-                            label: 'Category',
-                            value: '${category!.icon}  ${category!.name}',
-                          ),
-                        ],
-                        if (task.dueDate != null) ...[
-                          const Divider(height: 20, color: AppColors.divider),
-                          _DetailRow(
-                            label: 'Due Date',
-                            value: DateTimeUtils.formatHumanDate(task.dueDate!),
-                          ),
-                        ],
-                        const Divider(height: 20, color: AppColors.divider),
-                        _DetailRow(
-                          label: 'Preferred Time',
-                          value: switch (task.preferredTimeWindow) {
-                            PreferredTimeWindow.anytime => 'Any time',
-                            PreferredTimeWindow.morning => 'Morning',
-                            PreferredTimeWindow.afternoon => 'Afternoon',
-                            PreferredTimeWindow.evening => 'Evening',
-                          },
-                        ),
-                        if (task.energyLevel != null) ...[
-                          const Divider(height: 20, color: AppColors.divider),
-                          _DetailRow(
-                            label: 'Energy Level',
-                            value: switch (task.energyLevel!) {
-                              EnergyLevel.high => 'High',
-                              EnergyLevel.medium => 'Medium',
-                              EnergyLevel.low => 'Low',
-                            },
-                          ),
-                        ],
-                      ],
+                      ),
                     ),
-                  ),
+                    if (task.actualDuration > Duration.zero)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: AppColors.successLight,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          'مُنجز: ${DateTimeUtils.formatDuration(task.actualDuration)}',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.success,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 24),
 
-                // Description / Notes
-                if (task.description != null &&
-                    task.description!.trim().isNotEmpty) ...[
-                  const Text(
-                    'Notes',
+                // Description card
+                if (task.description != null && task.description!.isNotEmpty) ...[
+                  Text(
+                    'الوصف والملاحظات',
                     style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.getPrimaryText(context),
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Text(
-                        task.description!.trim(),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          height: 1.5,
-                          color: AppColors.textPrimary,
-                        ),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: AppColors.getCardColor(context),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.getBorder(context)),
+                    ),
+                    child: Text(
+                      task.description!,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.getPrimaryText(context),
+                        height: 1.5,
                       ),
                     ),
                   ),
                   const SizedBox(height: 24),
-                ] else
-                  const SizedBox(height: 12),
-
-                // Action Buttons
-                if (!isCompleted) ...[
-                  ElevatedButton.icon(
-                    onPressed: _isLoadingAction
-                        ? null
-                        : () => _startFocus(task),
-                    icon: const Icon(Icons.play_arrow_rounded, size: 22),
-                    label: const Text('Start Focus'),
-                  ),
-                  const SizedBox(height: 12),
-                  OutlinedButton.icon(
-                    onPressed: _isLoadingAction
-                        ? null
-                        : () => _completeTask(task),
-                    icon: const Icon(Icons.check_rounded, size: 20),
-                    label: const Text('Complete Task'),
-                  ),
                 ],
+
+                // Subtasks Section
+                Text(
+                  'الخطوات الفرعية',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.getPrimaryText(context),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.getCardColor(context),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: AppColors.getBorder(context)),
+                  ),
+                  child: Column(
+                    children: List.generate(_subtasks.length, (idx) {
+                      final done = _subtasks[idx];
+                      return CheckboxListTile(
+                        value: done,
+                        onChanged: (val) {
+                          setState(() => _subtasks[idx] = val ?? false);
+                        },
+                        title: Text(
+                          _subtaskLabels[idx],
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: done ? AppColors.getMutedText(context) : AppColors.getPrimaryText(context),
+                            decoration: done ? TextDecoration.lineThrough : null,
+                          ),
+                        ),
+                        activeColor: AppColors.getPrimaryColor(context),
+                        controlAffinity: ListTileControlAffinity.leading,
+                      );
+                    }),
+                  ),
+                ),
+                const SizedBox(height: 30),
               ],
             ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _StatusBadge extends StatelessWidget {
-  const _StatusBadge({required this.status});
-  final TaskStatus status;
-
-  @override
-  Widget build(BuildContext context) {
-    final (label, color, bg) = switch (status) {
-      TaskStatus.pending => (
-        'Pending',
-        AppColors.pending,
-        const Color(0xFFF1F3F5),
-      ),
-      TaskStatus.scheduled => (
-        'Scheduled',
-        AppColors.inProgress,
-        const Color(0xFFEBF2FF),
-      ),
-      TaskStatus.inProgress => (
-        'In Progress',
-        AppColors.inProgress,
-        const Color(0xFFEBF2FF),
-      ),
-      TaskStatus.completed => (
-        'Completed',
-        AppColors.completed,
-        const Color(0xFFE6F7ED),
-      ),
-      TaskStatus.cancelled => (
-        'Cancelled',
-        AppColors.textMuted,
-        const Color(0xFFF1F3F5),
-      ),
-    };
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: color,
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
-}
-
-class _DetailRow extends StatelessWidget {
-  const _DetailRow({
-    required this.label,
-    this.value,
-    this.valueWidget,
-    this.valueColor,
-  });
-
-  final String label;
-  final String? value;
-  final Widget? valueWidget;
-  final Color? valueColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
-        ),
-        if (valueWidget != null)
-          valueWidget!
-        else
-          Text(
-            value ?? '',
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: valueColor ?? AppColors.textPrimary,
-            ),
           ),
-      ],
+        );
+      },
+      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (_, __) => const Scaffold(body: Center(child: Text('حدث خطأ'))),
     );
   }
 }

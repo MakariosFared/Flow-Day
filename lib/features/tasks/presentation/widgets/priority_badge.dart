@@ -16,19 +16,19 @@ class PriorityBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final (label, color, bgColor) = switch (priority) {
       TaskPriority.high => (
-        'High',
-        AppColors.priorityHigh,
-        const Color(0xFFFFEBEB),
+        'أولوية عالية',
+        AppColors.danger,
+        AppColors.dangerLight,
       ),
       TaskPriority.medium => (
-        'Medium',
-        AppColors.priorityMedium,
-        const Color(0xFFFFF4E5),
+        'أولوية متوسطة',
+        AppColors.warning,
+        AppColors.warningLight,
       ),
       TaskPriority.low => (
-        'Low',
-        AppColors.priorityLow,
-        const Color(0xFFF1F3F5),
+        'أولوية عادية',
+        AppColors.getSecondaryText(context),
+        AppColors.getSurfaceSecondary(context),
       ),
     };
 
@@ -45,6 +45,10 @@ class PriorityBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(6),
+        border: Border.all(
+          color: color.withValues(alpha: 0.2),
+          width: 0.5,
+        ),
       ),
       child: Text(
         label,
@@ -52,7 +56,6 @@ class PriorityBadge extends StatelessWidget {
           color: color,
           fontSize: 11,
           fontWeight: FontWeight.w600,
-          letterSpacing: -0.2,
         ),
       ),
     );

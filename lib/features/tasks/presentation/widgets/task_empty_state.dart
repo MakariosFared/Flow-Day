@@ -23,43 +23,50 @@ class TaskEmptyState extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 72,
-              height: 72,
+              width: 64,
+              height: 64,
               decoration: BoxDecoration(
-                color: AppColors.primaryContainer.withValues(alpha: 0.5),
+                color: AppColors.getPrimarySubtle(context),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.check_circle_outline_rounded,
-                size: 36,
-                color: AppColors.primary,
+                size: 30,
+                color: AppColors.getPrimaryColor(context),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
-                letterSpacing: -0.2,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: AppColors.getPrimaryText(context),
               ),
             ),
             const SizedBox(height: 6),
-            const Text(
-              'Your captured tasks will appear here.',
+            Text(
+              'يومك هادئ تمامًا وبدون ضغوط. يمكنك إضافة مهام جديدة أو الاسترخاء 🌱',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+              style: TextStyle(
+                fontSize: 13,
+                color: AppColors.getSecondaryText(context),
+              ),
             ),
             if (actionLabel != null && onAction != null) ...[
-              const SizedBox(height: 24),
-              OutlinedButton.icon(
+              const SizedBox(height: 20),
+              ElevatedButton.icon(
                 onPressed: onAction,
                 icon: const Icon(Icons.add_rounded, size: 18),
                 label: Text(actionLabel!),
-                style: OutlinedButton.styleFrom(
-                  minimumSize: const Size(160, 42),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(160, 44),
+                  backgroundColor: AppColors.getPrimaryColor(context),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
             ],

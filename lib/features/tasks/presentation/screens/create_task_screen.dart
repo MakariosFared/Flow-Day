@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/utils/date_time_utils.dart';
 import '../../domain/entities/task.dart';
 import '../controllers/tasks_controller.dart';
 import '../widgets/category_chip.dart';
@@ -21,15 +20,14 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
 
-  Duration _duration = const Duration(minutes: 30); // 30m fallback per spec
-  String? _selectedCategoryId;
+  Duration _duration = const Duration(minutes: 30);
+  String? _selectedCategoryId = 'cat-work';
   TaskPriority _priority = TaskPriority.medium;
   DateTime? _dueDate;
   PreferredTimeWindow _preferredWindow = PreferredTimeWindow.anytime;
-  EnergyLevel? _energyLevel;
+  EnergyLevel? _energyLevel = EnergyLevel.medium;
 
   bool _isSubmitting = false;
-  String? _errorMessage;
 
   @override
   void dispose() {
@@ -38,42 +36,36 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
     super.dispose();
   }
 
-  Future<void> _submit() async {
+  void _submit() {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    setState(() {
-      _isSubmitting = true;
-      _errorMessage = null;
-    });
+    setState(() => _isSubmitting = true);
 
-    try {
-      final controller = ref.read(tasksControllerProvider);
-      await controller.createTask(
-        title: _titleController.text.trim(),
-        estimatedDuration: _duration,
-        description: _descriptionController.text.trim().isNotEmpty
-            ? _descriptionController.text.trim()
-            : null,
-        categoryId: _selectedCategoryId,
-        priority: _priority,
-        dueDate: _dueDate,
-        preferredTimeWindow: _preferredWindow,
-        energyLevel: _energyLevel,
-      );
+    final controller = ref.read(tasksControllerProvider);
+    controller.createTask(
+      title: _titleController.text.trim(),
+      estimatedDuration: _duration,
+      description: _descriptionController.text.trim().isNotEmpty
+          ? _descriptionController.text.trim()
+          : null,
+      categoryId: _selectedCategoryId,
+      priority: _priority,
+      dueDate: _dueDate,
+      preferredTimeWindow: _preferredWindow,
+      energyLevel: _energyLevel,
+    );
 
-      if (mounted) {
-        context.pop();
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isSubmitting = false;
-        });
-      }
-    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('تمت إضافة المهمة إلى خطتك بهدوء 🌱'),
+        backgroundColor: AppColors.getPrimaryColor(context),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+
+    context.pop();
   }
 
   Future<void> _pickDueDate() async {
@@ -96,280 +88,299 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
     final categoriesAsync = ref.watch(categoriesStreamProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Task')),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          children: [
-            if (_errorMessage != null) ...[
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppColors.priorityHigh.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: AppColors.priorityHigh.withValues(alpha: 0.3),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.error_outline_rounded,
-                      color: AppColors.priorityHigh,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        _errorMessage!,
-                        style: const TextStyle(
-                          color: AppColors.priorityHigh,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
-
-            // Title
-            TextFormField(
-              controller: _titleController,
-              autofocus: true,
-              textCapitalization: TextCapitalization.sentences,
-              decoration: const InputDecoration(
-                labelText: 'Title *',
-                hintText: 'What needs to be done?',
-              ),
-              validator: (val) {
-                if (val == null || val.trim().isEmpty) {
-                  return 'Title is required';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 18),
-
-            // Duration Picker
-            DurationPickerField(
-              selectedDuration: _duration,
-              onChanged: (d) => setState(() => _duration = d),
-            ),
-            const SizedBox(height: 22),
-
-            // Category Selection
-            const Text(
-              'Category',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 8),
-            categoriesAsync.when(
-              data: (categories) => Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: categories.map((cat) {
-                  final isSelected = _selectedCategoryId == cat.id;
-                  return CategoryChip(
-                    category: cat,
-                    isSelected: isSelected,
-                    onTap: () {
-                      setState(() {
-                        _selectedCategoryId = isSelected ? null : cat.id;
-                      });
-                    },
-                  );
-                }).toList(),
-              ),
-              loading: () => const SizedBox(height: 36),
-              error: (_, __) => const SizedBox.shrink(),
-            ),
-            const SizedBox(height: 22),
-
-            // Priority
-            const Text(
-              'Priority',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 8),
-            SegmentedButton<TaskPriority>(
-              segments: const [
-                ButtonSegment(value: TaskPriority.low, label: Text('Low')),
-                ButtonSegment(
-                  value: TaskPriority.medium,
-                  label: Text('Medium'),
-                ),
-                ButtonSegment(value: TaskPriority.high, label: Text('High')),
-              ],
-              selected: {_priority},
-              onSelectionChanged: (set) =>
-                  setState(() => _priority = set.first),
-              style: ButtonStyle(
-                visualDensity: VisualDensity.compact,
-                shape: WidgetStatePropertyAll(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 22),
-
-            // Due Date & Preferred Window Row
-            Row(
+      appBar: AppBar(
+        title: const Text('إضافة مهمة جديدة'),
+      ),
+      body: SafeArea(
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Due Date',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      OutlinedButton.icon(
-                        onPressed: _pickDueDate,
-                        icon: const Icon(Icons.event_outlined, size: 16),
-                        label: Text(
-                          _dueDate != null
-                              ? DateTimeUtils.formatHumanDate(_dueDate!)
-                              : 'None',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: _dueDate != null
-                                ? AppColors.textPrimary
-                                : AppColors.textSecondary,
-                          ),
-                        ),
-                      ),
-                    ],
+                // Title Field
+                Text(
+                  'عنوان المهمة *',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.getPrimaryText(context),
                   ),
                 ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Preferred Time',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      DropdownButtonFormField<PreferredTimeWindow>(
-                        initialValue: _preferredWindow,
-                        isExpanded: true,
-                        decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: _titleController,
+                  textInputAction: TextInputAction.next,
+                  style: TextStyle(color: AppColors.getPrimaryText(context)),
+                  decoration: const InputDecoration(
+                    hintText: 'ما الذي ترغب بإنجازه اليوم؟',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'يرجى إدخال عنوان المهمة';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 18),
+
+                // Description Field
+                Text(
+                  'ملاحظات وتفاصيل إضافية (اختياري)',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.getPrimaryText(context),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: _descriptionController,
+                  maxLines: 3,
+                  style: TextStyle(color: AppColors.getPrimaryText(context)),
+                  decoration: const InputDecoration(
+                    hintText: 'أضف أي روابط، ملاحظات، أو نقاط فرعية تود تذكرها...',
+                  ),
+                ),
+                const SizedBox(height: 18),
+
+                // Estimated Duration Picker
+                DurationPickerField(
+                  selectedDuration: _duration,
+                  onChanged: (d) => setState(() => _duration = d),
+                ),
+                const SizedBox(height: 20),
+
+                // Category Selector
+                Text(
+                  'التصنيف',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.getPrimaryText(context),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                categoriesAsync.when(
+                  data: (categories) => Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: categories.map((cat) {
+                      final isSelected = _selectedCategoryId == cat.id;
+                      return CategoryChip(
+                        category: cat,
+                        isSelected: isSelected,
+                        onTap: () => setState(() {
+                          _selectedCategoryId = isSelected ? null : cat.id;
+                        }),
+                      );
+                    }).toList(),
+                  ),
+                  loading: () => const SizedBox.shrink(),
+                  error: (_, __) => const SizedBox.shrink(),
+                ),
+                const SizedBox(height: 20),
+
+                // Priority Selector
+                Text(
+                  'مستوى الأولوية',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.getPrimaryText(context),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: TaskPriority.values.map((p) {
+                    final isSelected = _priority == p;
+                    return Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: ChoiceChip(
+                          label: Center(child: Text(p.labelAr)),
+                          selected: isSelected,
+                          onSelected: (_) => setState(() => _priority = p),
+                          selectedColor: AppColors.getPrimaryColor(context),
+                          backgroundColor: AppColors.getSurfaceSecondary(context),
+                          labelStyle: TextStyle(
+                            fontSize: 12,
+                            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                            color: isSelected ? Colors.white : AppColors.getPrimaryText(context),
                           ),
-                        ),
-                        items: PreferredTimeWindow.values.map((w) {
-                          final label = switch (w) {
-                            PreferredTimeWindow.anytime => 'Any time',
-                            PreferredTimeWindow.morning => 'Morning',
-                            PreferredTimeWindow.afternoon => 'Afternoon',
-                            PreferredTimeWindow.evening => 'Evening',
-                          };
-                          return DropdownMenuItem(
-                            value: w,
-                            child: Text(
-                              label,
-                              style: const TextStyle(fontSize: 13),
+                          showCheckmark: false,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: BorderSide(
+                              color: isSelected ? AppColors.getPrimaryColor(context) : AppColors.getBorder(context),
                             ),
-                          );
-                        }).toList(),
-                        onChanged: (val) {
-                          if (val != null) {
-                            setState(() => _preferredWindow = val);
-                          }
-                        },
+                          ),
+                        ),
                       ),
-                    ],
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 20),
+
+                // Due Date
+                Text(
+                  'تاريخ الاستحقاق',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.getPrimaryText(context),
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 22),
-
-            // Energy Level
-            const Text(
-              'Energy Level',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 8),
-            SegmentedButton<EnergyLevel?>(
-              emptySelectionAllowed: true,
-              segments: const [
-                ButtonSegment(value: EnergyLevel.low, label: Text('Low')),
-                ButtonSegment(value: EnergyLevel.medium, label: Text('Medium')),
-                ButtonSegment(value: EnergyLevel.high, label: Text('High')),
-              ],
-              selected: {_energyLevel},
-              onSelectionChanged: (set) =>
-                  setState(() => _energyLevel = set.firstOrNull),
-              style: ButtonStyle(
-                visualDensity: VisualDensity.compact,
-                shape: WidgetStatePropertyAll(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                const SizedBox(height: 8),
+                InkWell(
+                  onTap: _pickDueDate,
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: AppColors.getCardColor(context),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.getBorder(context)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.calendar_today_rounded, size: 18, color: AppColors.getPrimaryColor(context)),
+                            const SizedBox(width: 10),
+                            Text(
+                              _dueDate != null
+                                  ? '${_dueDate!.year}-${_dueDate!.month.toString().padLeft(2, '0')}-${_dueDate!.day.toString().padLeft(2, '0')}'
+                                  : 'اليوم (افتراضي)',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: AppColors.getPrimaryText(context),
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (_dueDate != null)
+                          IconButton(
+                            icon: const Icon(Icons.close_rounded, size: 16),
+                            onPressed: () => setState(() => _dueDate = null),
+                          )
+                        else
+                          Icon(Icons.arrow_forward_ios_rounded, size: 14, color: AppColors.getMutedText(context)),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 22),
+                const SizedBox(height: 20),
 
-            // Description / Notes
-            TextFormField(
-              controller: _descriptionController,
-              maxLines: 3,
-              textCapitalization: TextCapitalization.sentences,
-              decoration: const InputDecoration(
-                labelText: 'Notes',
-                hintText: 'Additional details or context...',
-                alignLabelWithHint: true,
-              ),
-            ),
-            const SizedBox(height: 32),
-
-            // Submit Button
-            ElevatedButton(
-              onPressed: _isSubmitting ? null : _submit,
-              child: _isSubmitting
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
+                // Preferred Time Window
+                Text(
+                  'الفترة المفضلة للإنجاز',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.getPrimaryText(context),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  decoration: BoxDecoration(
+                    color: AppColors.getCardColor(context),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.getBorder(context)),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<PreferredTimeWindow>(
+                      value: _preferredWindow,
+                      isExpanded: true,
+                      dropdownColor: AppColors.getCardColor(context),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppColors.getPrimaryText(context),
                       ),
-                    )
-                  : const Text('Create Task'),
+                      onChanged: (val) {
+                        if (val != null) setState(() => _preferredWindow = val);
+                      },
+                      items: PreferredTimeWindow.values.map((w) {
+                        return DropdownMenuItem(
+                          value: w,
+                          child: Text(w.labelAr),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Energy Level
+                Text(
+                  'مستوى الطاقة المطلوب',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.getPrimaryText(context),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: EnergyLevel.values.map((level) {
+                    final isSelected = _energyLevel == level;
+                    return Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: ChoiceChip(
+                          avatar: Icon(level.icon, size: 16, color: isSelected ? Colors.white : AppColors.getPrimaryColor(context)),
+                          label: Text(level.labelAr, style: const TextStyle(fontSize: 11)),
+                          selected: isSelected,
+                          onSelected: (_) => setState(() => _energyLevel = level),
+                          selectedColor: AppColors.getPrimaryColor(context),
+                          backgroundColor: AppColors.getSurfaceSecondary(context),
+                          labelStyle: TextStyle(
+                            fontSize: 11,
+                            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                            color: isSelected ? Colors.white : AppColors.getPrimaryText(context),
+                          ),
+                          showCheckmark: false,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: BorderSide(
+                              color: isSelected ? AppColors.getPrimaryColor(context) : AppColors.getBorder(context),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 32),
+
+                // Submit Button
+                ElevatedButton(
+                  onPressed: _isSubmitting ? null : _submit,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.getPrimaryColor(context),
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size.fromHeight(50),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    elevation: 0,
+                  ),
+                  child: _isSubmitting
+                      ? const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        )
+                      : const Text(
+                          'إضافة المهمة إلى الخطة',
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                        ),
+                ),
+                const SizedBox(height: 24),
+              ],
             ),
-            const SizedBox(height: 24),
-          ],
+          ),
         ),
       ),
     );

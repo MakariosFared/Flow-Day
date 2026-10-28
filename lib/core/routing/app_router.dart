@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/settings/presentation/screens/local_setup_screen.dart';
+import '../../features/settings/presentation/screens/onboarding_screen.dart';
+import '../../features/settings/presentation/screens/settings_screen.dart';
+import '../../features/tasks/presentation/screens/braindump_screen.dart';
 import '../../features/tasks/presentation/screens/create_task_screen.dart';
 import '../../features/tasks/presentation/screens/edit_task_screen.dart';
 import '../../features/tasks/presentation/screens/task_details_screen.dart';
 import '../../features/tasks/presentation/screens/tasks_screen.dart';
+import '../../features/today/presentation/screens/daily_review_screen.dart';
+import '../../features/today/presentation/screens/day_planner_screen.dart';
+import '../../features/today/presentation/screens/focus_session_screen.dart';
+import '../../features/today/presentation/screens/insights_screen.dart';
+import '../../features/today/presentation/screens/today_screen.dart';
 import '../theme/app_theme.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/tasks',
+  initialLocation: '/today',
   routes: <RouteBase>[
     ShellRoute(
       builder: (context, state, child) {
@@ -17,11 +26,7 @@ final GoRouter appRouter = GoRouter(
       routes: [
         GoRoute(
           path: '/today',
-          builder: (context, state) => const _SprintPlaceholderScreen(
-            title: 'Today',
-            subtitle: 'Timeline & daily plan will arrive in Sprint 3.',
-            icon: Icons.calendar_today_rounded,
-          ),
+          builder: (context, state) => const TodayScreen(),
         ),
         GoRoute(
           path: '/tasks',
@@ -29,13 +34,36 @@ final GoRouter appRouter = GoRouter(
         ),
         GoRoute(
           path: '/insights',
-          builder: (context, state) => const _SprintPlaceholderScreen(
-            title: 'Insights',
-            subtitle: 'Productivity statistics will arrive in Sprint 6.',
-            icon: Icons.insights_rounded,
-          ),
+          builder: (context, state) => const InsightsScreen(),
+        ),
+        GoRoute(
+          path: '/settings',
+          builder: (context, state) => const SettingsScreen(),
         ),
       ],
+    ),
+    GoRoute(
+      path: '/planner',
+      builder: (context, state) => const DayPlannerScreen(),
+    ),
+    GoRoute(
+      path: '/focus',
+      builder: (context, state) => const FocusSessionScreen(),
+    ),
+    GoRoute(
+      path: '/focus/:id',
+      builder: (context, state) {
+        final id = state.pathParameters['id'];
+        return FocusSessionScreen(taskId: id);
+      },
+    ),
+    GoRoute(
+      path: '/braindump',
+      builder: (context, state) => const BrainDumpScreen(),
+    ),
+    GoRoute(
+      path: '/daily-review',
+      builder: (context, state) => const DailyReviewScreen(),
     ),
     GoRoute(
       path: '/tasks/create',
@@ -55,6 +83,14 @@ final GoRouter appRouter = GoRouter(
         return EditTaskScreen(taskId: taskId);
       },
     ),
+    GoRoute(
+      path: '/onboarding',
+      builder: (context, state) => const OnboardingScreen(),
+    ),
+    GoRoute(
+      path: '/setup',
+      builder: (context, state) => const LocalSetupScreen(),
+    ),
   ],
 );
 
@@ -67,7 +103,8 @@ class _AppScaffoldShell extends StatelessWidget {
     if (location.startsWith('/today')) return 0;
     if (location.startsWith('/tasks')) return 1;
     if (location.startsWith('/insights')) return 2;
-    return 1;
+    if (location.startsWith('/settings')) return 3;
+    return 0;
   }
 
   void _onItemTapped(int index, BuildContext context) {
@@ -81,6 +118,9 @@ class _AppScaffoldShell extends StatelessWidget {
       case 2:
         context.go('/insights');
         break;
+      case 3:
+        context.go('/settings');
+        break;
     }
   }
 
@@ -93,83 +133,44 @@ class _AppScaffoldShell extends StatelessWidget {
       bottomNavigationBar: NavigationBar(
         selectedIndex: currentIndex,
         onDestinationSelected: (idx) => _onItemTapped(idx, context),
-        backgroundColor: AppColors.surface,
-        indicatorColor: AppColors.primaryContainer,
-        elevation: 1,
-        destinations: const [
+        backgroundColor: AppColors.getCardColor(context),
+        indicatorColor: AppColors.getPrimarySubtle(context),
+        elevation: 0,
+        height: 66,
+        destinations: [
           NavigationDestination(
-            icon: Icon(Icons.calendar_today_outlined),
+            icon: const Icon(Icons.today_outlined),
             selectedIcon: Icon(
-              Icons.calendar_today_rounded,
-              color: AppColors.primary,
+              Icons.today_rounded,
+              color: AppColors.getPrimaryColor(context),
             ),
-            label: 'Today',
+            label: 'اليوم',
           ),
           NavigationDestination(
-            icon: Icon(Icons.check_circle_outline_rounded),
+            icon: const Icon(Icons.check_circle_outline_rounded),
             selectedIcon: Icon(
               Icons.check_circle_rounded,
-              color: AppColors.primary,
+              color: AppColors.getPrimaryColor(context),
             ),
-            label: 'Tasks',
+            label: 'المهام',
           ),
           NavigationDestination(
-            icon: Icon(Icons.insights_outlined),
+            icon: const Icon(Icons.insights_outlined),
             selectedIcon: Icon(
               Icons.insights_rounded,
-              color: AppColors.primary,
+              color: AppColors.getPrimaryColor(context),
             ),
-            label: 'Insights',
+            label: 'المؤشرات',
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.settings_outlined),
+            selectedIcon: Icon(
+              Icons.settings_rounded,
+              color: AppColors.getPrimaryColor(context),
+            ),
+            label: 'الإعدادات',
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _SprintPlaceholderScreen extends StatelessWidget {
-  const _SprintPlaceholderScreen({
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-  });
-
-  final String title;
-  final String subtitle;
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 48, color: AppColors.textMuted),
-              const SizedBox(height: 16),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                subtitle,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
